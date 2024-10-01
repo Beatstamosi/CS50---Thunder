@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+    <div class="search-field"> 
+        <form>
+            <div class="radio-btn-search">
+                <input type="radio" id="movies" name="search" value="Movies">
+                <label for="movies">Movies</label>
+                <input type="radio" id="tvshow" name="search" value="TV Shows">
+                <label for="tvshow">TV Shows</label>
+                <input type="radio" id="person" name="search" value="Person">
+                <label for="person">Person</label>
+            </div>
+            <div class="search-bar-container">
+                <input class="search-bar" id="search-bar" type="search" placeholder="Search">
+            </div>
+        </form>
+    </div>
+    
+{% endblock %}

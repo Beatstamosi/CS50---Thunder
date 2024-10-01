@@ -1,0 +1,111 @@
+body {
+    background-image: url("/static/css/images/background_space.jpg");
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#logo-menu {
+    width: 200px;
+    height: auto;
+    padding: 20px;
+}
+
+.user-menu {
+    cursor: pointer;
+    color: #db4a2b;
+    margin-right: 70px;
+    margin-top: 20px;
+    position: relative;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    transform: translateX(-30%);
+    color: white;
+    z-index: 1000;
+    width: 300px;
+    list-style: none;
+}
+
+.user-menu:hover .dropdown {
+    display: block;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative; 
+    margin-bottom: 50px;
+}
+
+.nav-items {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    left: 50%; 
+    transform: translateX(-50%);
+    margin-top: 20px;
+}
+
+.nav-item {
+    margin: 0 15px;
+}
+
+.nav-link {
+    font-weight: bold;
+    font-size: 20px;
+    color: #db4a2b;
+}
+
+.nav-link:hover {
+    color: white;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5),
+                 0 0 10px rgba(255, 255, 255, 0.3),
+                 0 0 15px rgba(255, 255, 255, 0.2);
+    transform: scale(1.2);
+}
+
+
+.search-field {
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar {
+    border-radius: 24px;
+    font-size: 20px;
+    padding: 10px 20px;
+    border: 1px solid #db4a2b;
+    background-color: white;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3),
+                0 1px 30px rgba(255, 255, 255, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    width: 500px;
+}
+
+.search-bar:focus {
+    box-shadow: 0 6px 25px rgba(255, 255, 255, 0.5),
+                0 1px 40px rgba(255, 255, 255, 0.3);
+    outline: none;
+    transform: scale(1.02);
+}
+
+.radio-btn-search {
+    color: white;
+    margin-bottom: 10px;
+    font-size: 17px;
+    margin-left: 20px;
+}
+
+.radio-btn-search label {
+    padding-right: 15px;
+}
+
+input[type='radio'] {
+    accent-color: #db4a2b;
+}
