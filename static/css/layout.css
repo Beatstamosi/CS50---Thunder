@@ -109,3 +109,76 @@ body {
 input[type='radio'] {
     accent-color: #db4a2b;
 }
+
+#suggestions-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 50px;
+    justify-content: center;
+    gap: 30px;
+}
+
+.img-movie-display {
+    width: 100%;
+    height: auto;
+}
+
+.footer {
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: auto;
+}
+
+.container-search-result {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 300px;
+}
+
+.container-search-result:hover {
+    box-shadow: 0 6px 25px rgba(255, 255, 255, 0.5),
+                0 1px 40px rgba(255, 255, 255, 0.3);
+    outline: none;
+    transform: scale(1.02);
+}
+
+.overlay-rating {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    color: #db4a2b;
+    background-color: black;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 35px;
+}
+
+.choices-content-suggestion {
+    font-size: 15px;
+    color: #db4a2b;
+    text-decoration: underline;
+    display: flex;
+    width: 500px;
+    justify-content: space-evenly;
+    margin: 20px 0px;
+}
+
+#choices-movie-suggestions {
+    display: none;
+    visibility: hidden;
+}
+
+#choices-tv-suggestions {
+    display: none;
+    visibility: hidden;
+}
+
+#choices-content-suggestion span {
+    cursor: pointer;
+}
