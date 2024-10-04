@@ -4,7 +4,10 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("search", views.search, name="search"),
-    path("get-suggestions", views.get_suggestions, name="get-suggestions"),
+    path("watchlist/", views.watchlist, name="watchlist"),
+    
+    # API calls
+    path("search/", views.search, name="search"),
+    path("get-suggestions/", views.get_suggestions, name="get-suggestions"),
 ]
 

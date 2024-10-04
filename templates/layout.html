@@ -16,12 +16,15 @@
         </li>
         <div class="nav-items">
             {% if user.is_authenticated %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}">Search</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Watchlist</a>
-            </li>
+                {% if request.path == "/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'watchlist' %}">My Watchlist</a>
+                    </li>
+                {% elif request.path == "/watchlist/" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Search</a>
+                    </li>
+                {% endif %}
             {% endif %}
         </div>
         <div class="user-menu">
@@ -40,9 +43,7 @@
     {% block body %}
     {% endblock %}
     <footer>
-        <div class="footer">
-            <p>© 2024 thunder.</p>
-        </div>
+        <p>© 2024 thunder.</p>
     </footer>
 </body>
 </html>

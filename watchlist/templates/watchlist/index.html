@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Search{% endblock %}
 
 {% block body %}
     <div class="search-field"> 
@@ -31,6 +31,11 @@
             </div>
         </form>
     </div>
-    <div id="suggestions-container"></div>
+    <div id="suggestions-container">
+        <div class="container-search-results">
+            <div id="search-results">
+            </div>
+        </div>
+    </div>
     
 {% endblock %}

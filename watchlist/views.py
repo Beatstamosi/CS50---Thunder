@@ -23,8 +23,9 @@ def search(request):
     data = json.loads(request.body)
     search_data = data.get("searchData")
     search_type = data.get("searchType")
+    page = data.get("page")
 
-    url = f"https://api.themoviedb.org/3/search/{search_type}?query={search_data}&include_adult=false&language=en-US&page=1"
+    url = f"https://api.themoviedb.org/3/search/{search_type}?query={search_data}&include_adult=false&language=en-US&page={page}"
 
     headers = {
         "accept": "application/json",
@@ -37,14 +38,26 @@ def search(request):
     content = []
 
     if response.status_code == 200:
+        # get content data
         results = response.json().get("results", [])
 
+        # get page info
+        total_pages = response.json().get("total_pages")
+        current_page = response.json().get("page")
+
+        if total_pages == current_page:
+            current_page = "last_page"
+
+        # continue with content data
         if search_type != "person":
             for item in results:
 
                 content.append(build_content_data(item))
 
-            return JsonResponse(content, safe=False)
+            return JsonResponse({
+                "content": content,
+                "currentPage": current_page
+            }, safe=False)
 
         elif search_type == "person":
             for element in results:
@@ -53,7 +66,10 @@ def search(request):
               
                     content.append(build_content_data(item))
 
-            return JsonResponse(content, safe=False)
+            return JsonResponse({
+                "content": content,
+                "currentPage": current_page
+            }, safe=False)
         
     else:
         return JsonResponse({"error": "Couldn't fetch movie data. Please refresh and try again"}, status=400)
@@ -69,8 +85,9 @@ def get_suggestions(request):
     data = json.loads(request.body)
     suggestion_type = data.get("suggestionType")
     keyword = data.get("keyword")
+    page = data.get("page")
 
-    url = f"https://api.themoviedb.org/3/{keyword}/{suggestion_type}"
+    url = f"https://api.themoviedb.org/3/{keyword}/{suggestion_type}?language=en-US&page={page}"
 
     headers = {
         "accept": "application/json",
@@ -87,11 +104,27 @@ def get_suggestions(request):
         # get only the movie / tv show data
         results = response.json().get("results", [])
 
+        # get page info
+        total_pages = response.json().get("total_pages")
+        current_page = response.json().get("page")
+
+        if total_pages == current_page:
+            current_page = "last_page"
+
         # loop through content and extract relevant info
         for item in results:
             content.append(build_content_data(item))
 
-        return JsonResponse(content, safe=False)
+        return JsonResponse({
+            "content": content,
+            "totalPages": total_pages,
+            "currentPage": current_page
+        }, safe=False)
     
     else:
         return JsonResponse({"error": "Couldn't fetch movie data. Please refresh and try again"}, status=400)
+
+
+
+def watchlist(request):
+    return render(request, "watchlist/watchlist.html")
