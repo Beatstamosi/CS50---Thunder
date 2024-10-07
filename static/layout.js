@@ -222,14 +222,29 @@ function createContentCard(content) {
     contentCard.classList.add("container-content-card");
 
     // fill with content data
+    const contentType = content.type;
+    const directorText = contentType === "movie" ? "Director: " : "Executive Producer: ";
+    const seasonsInfo = content.seasons ? `<p class="content-card-seasons">Seasons: ${content.seasons} -- Episodes: ${content.episodes}</p>` : "";
+
+    // create cards to display genre information
+    const genreCards = content.genres.map(genre => 
+        `<span class="content-card-genre-cards">${genre}</span>`
+    ).join(``);
+
+    console.log(genreCards)
+
     contentCard.innerHTML = `
         <div class="contend-card--grid-column1">
             <img class="content-card-image" src="${content.image}">
         </div>
         <div class="contend-card--grid-column2">
             <h1 class="content-card-title">${content.title}</h1>
+            ${seasonsInfo}
+            <div class="content-card-genres">${genreCards}</div>
             <p class="content-card-release-date">Release Date: ${content.release_date}</p>
             <p class="content-card-overview">${content.overview}</p>
+            <p class="content-card-actors">Starring: ${content.actors}</p>
+            <p class="content-card-director">${directorText}${content.creator}</p>
         </div>
         <div class="contend-card--grid-column3">
             <div class="content-card-rating">${content.rating}</div>
@@ -313,7 +328,8 @@ function getContentSuggestions(suggestionType, keyword, page = 1) {
 
 
 function ratingScoreVisuals() {
-    const ratings = document.querySelectorAll(".content-card-rating");
+    // Only select unprocessed ratings
+    const ratings = document.querySelectorAll(".content-card-rating:not(.processed)");
 
     ratings.forEach((rating) => {
         const ratingScore = parseFloat(rating.innerHTML.trim()); 
@@ -327,6 +343,10 @@ function ratingScoreVisuals() {
             
             // Wrap the content in a span
             rating.innerHTML = `<span>${ratingScore.toFixed(1)}</span>`; 
+
+            // mark rating as processed
+            rating.classList.add("processed");
+
         } else {
             console.warn(`Invalid rating value: ${rating.innerHTML}`);
             rating.innerHTML = `<span>NA</span>`; // Invalid Ratings

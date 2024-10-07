@@ -107,7 +107,9 @@ footer {
     color: white;
     margin-bottom: 10px;
     font-size: 17px;
-    margin-left: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
 .radio-btn-search label {
@@ -252,7 +254,9 @@ input[type='radio'] {
 .contend-card--grid-column3 {
     grid-column: 3;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 
@@ -299,6 +303,8 @@ input[type='radio'] {
   
     font-size: calc(var(--rating-size) / 3);
     line-height: 1;
+
+    margin-bottom: 30px;
   }
   
   .content-card-rating span {
@@ -330,5 +336,39 @@ input[type='radio'] {
     border-radius: inherit;
     box-shadow: 0 0 0 1rem var(--background-color);
     z-index: -1;
+  }
+
+  .content-card-actors {
+    color: white;
+    font-style: italic;
+    font-size: 14px;
+  }
+
+  .content-card-director {
+    color: white;
+    font-style: italic;
+    font-size: 14px;
+  }
+
+  .content-card-seasons {
+    color: #db4a2b;
+    font-weight: bold;
+    font-size: 15px;
+    background-color: black;
+  }
+
+  .content-card-genres {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1em;
+  }
+
+  .content-card-genre-cards {
+    display: inline-block;
+    background-color: black;
+    border: #db4a2b 1px solid;
+    border-radius: 10px;
+    color: white;
+    padding: 5px 8px;
   }
   
