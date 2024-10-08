@@ -1,3 +1,11 @@
+:root {
+    --rating-size: 8rem;
+    --bar-size: 1rem;
+    --background-color: black;
+    --rating-color: #db4a2b;
+    --main-orange: #db4a2b;
+  }
+
 body {
     background-image: url("/static/css/images/background_space.jpg");
     background-attachment: fixed;
@@ -21,7 +29,7 @@ footer {
 
 .user-menu {
     cursor: pointer;
-    color: #db4a2b;
+    color: var(--main-orange);
     margin-right: 70px;
     margin-top: 20px;
     position: relative;
@@ -67,7 +75,7 @@ footer {
 .nav-link {
     font-weight: bold;
     font-size: 25px;
-    color: #db4a2b;
+    color: var(--main-orange);
 }
 
 .nav-link:hover {
@@ -88,7 +96,7 @@ footer {
     border-radius: 24px;
     font-size: 20px;
     padding: 10px 20px;
-    border: 1px solid #db4a2b;
+    border: 1px solid var(--main-orange);
     background-color: white;
     box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3),
                 0 1px 30px rgba(255, 255, 255, 0.1);
@@ -117,7 +125,7 @@ footer {
 }
 
 input[type='radio'] {
-    accent-color: #db4a2b;
+    accent-color: var(--main-orange);
 }
 
 #suggestions-container {
@@ -151,7 +159,7 @@ input[type='radio'] {
     position: absolute;
     top: 0px;
     right: 0px;
-    color: #db4a2b;
+    color: var(--main-orange);
     background-color: black;
     padding: 5px;
     font-weight: bold;
@@ -179,7 +187,7 @@ input[type='radio'] {
 .show-more-button {
     font-size: 20px;
     font-weight: bold;
-    background-color: #db4a2b;
+    background-color: var(--main-orange);
     color: white;
     padding: 5px 10px;
     width: 200px;
@@ -221,7 +229,7 @@ input[type='radio'] {
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
-    border: #db4a2b 1px solid;
+    border: var(--main-orange) 1px solid;
     padding: 40px 0 40px 40px;
     border-radius: 8px;
     width: 80%;
@@ -259,7 +267,7 @@ input[type='radio'] {
 .content-card-title {
     font-size: 50px;
     font-weight: bold;
-    color: #db4a2b;
+    color: var(--main-orange);
 }
 
 .content-card-release-date {
@@ -275,13 +283,6 @@ input[type='radio'] {
 
 
 /* Rating Score Visuals */
-
-:root {
-    --rating-size: 8rem;
-    --bar-size: 1rem;
-    --background-color: black;
-    --rating-color: #db4a2b;
-  }
   
   /* Rating item */
   .content-card-rating {
@@ -334,98 +335,98 @@ input[type='radio'] {
     z-index: -1;
   }
 
-  .content-card-actors {
-    color: white;
-    font-style: italic;
-    font-size: 14px;
-  }
-
-  .content-card-director {
-    color: white;
-    font-style: italic;
-    font-size: 14px;
-  }
-
-  .content-card-seasons {
-    color: #db4a2b;
-    font-weight: bold;
-    font-size: 15px;
-    background-color: black;
-  }
-
-  .content-card-genres {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 1em;
-  }
-
-  .content-card-genre-cards {
-    display: inline-block;
-    background-color: black;
-    border: #db4a2b 1px solid;
-    border-radius: 10px;
-    color: white;
-    padding: 5px 8px;
-  }
-  
-
-  .choices-content-suggestion-genre-movie {
-    display: none;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    max-width: 900px;
-    gap: 10px;
-    justify-content: center;
+.content-card-actors {
+color: white;
+font-style: italic;
+font-size: 14px;
 }
 
-  .choices-content-suggestion-genre-tv {
-    display: none;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    max-width: 800px;
-    gap: 10px;
-    justify-content: center;
-  }
+.content-card-director {
+color: white;
+font-style: italic;
+font-size: 14px;
+}
 
-  .container-suggestions-field, .container-genre-suggestions-field {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+.content-card-seasons {
+color: var(--main-orange);
+font-weight: bold;
+font-size: 15px;
+background-color: black;
+}
 
-  .container-genre-suggestions-field {
-    margin-top: 20px;
-  }
+.content-card-genres {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-bottom: 1em;
+}
 
-  .suggestion-button {
-    font-size: 17px;
-    color: #db4a2b;
-    font-weight: bold;
-    background-color: black;
-  }
+.content-card-genre-cards {
+display: inline-block;
+background-color: black;
+border: var(--main-orange) 1px solid;
+border-radius: 10px;
+color: white;
+padding: 5px 8px;
+}
 
-  .suggestion-button:hover {
-    transform: scale(1.3);
-    cursor: pointer;
-    font-weight: bold;
-  }
 
-  .genre-button {
-    display: inline-block;
-    background-color: black;
-    border: #db4a2b 1px solid;
-    border-radius: 10px;
-    color: white;
-    padding: 5px 8px;
-    font-size: 15px;
-  }
+.choices-content-suggestion-genre-movie {
+display: none;
+flex-wrap: wrap;
+justify-content: space-between;
+max-width: 900px;
+gap: 10px;
+justify-content: center;
+}
 
-  .genre-button:hover {
-    background-color: #db4a2b;
-    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.5),
-                0 1px 20px rgba(255, 255, 255, 0.3);
-    outline: none;
-    transform: scale(1.05);
-  }
+.choices-content-suggestion-genre-tv {
+display: none;
+flex-wrap: wrap;
+justify-content: space-between;
+max-width: 800px;
+gap: 10px;
+justify-content: center;
+}
+
+.container-suggestions-field, .container-genre-suggestions-field {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+
+.container-genre-suggestions-field {
+margin-top: 20px;
+}
+
+.suggestion-button {
+font-size: 17px;
+color: var(--main-orange);
+font-weight: bold;
+background-color: black;
+}
+
+.suggestion-button:hover {
+transform: scale(1.3);
+cursor: pointer;
+font-weight: bold;
+}
+
+.genre-button {
+display: inline-block;
+background-color: black;
+border: var(--main-orange) 1px solid;
+border-radius: 10px;
+color: white;
+padding: 5px 8px;
+font-size: 15px;
+}
+
+.genre-button:hover {
+background-color: var(--main-orange);
+box-shadow: 0 6px 15px rgba(255, 255, 255, 0.5),
+            0 1px 20px rgba(255, 255, 255, 0.3);
+outline: none;
+transform: scale(1.05);
+}
