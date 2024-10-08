@@ -1,6 +1,6 @@
 import requests
 
-def build_content_data(item):
+def build_content_data(request, item):
     """
     Extracts relevant data from the given data structure and formats it into a dictionary.
     """
@@ -38,6 +38,17 @@ def build_content_data(item):
     genre_names = get_genre_info(content_type, genre_ids)
 
     content["genres"] = genre_names
+
+    # get watchlist status
+    user = request.user
+
+    # get watchlist with filter = user
+    # get content.ids from watchlist
+    # check if these ids == content.id
+        # if yes add remove from watchlist button
+            # check if my_rating exists
+            # if yes pass my_rating
+        # if no add to watchlist button
  
     return content
 

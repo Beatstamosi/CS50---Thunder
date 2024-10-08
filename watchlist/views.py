@@ -64,7 +64,7 @@ def search(request):
                 movies = element.get("known_for", [])
                 for item in movies:
               
-                    content.append(build_content_data(item))
+                    content.append(build_content_data(request, item))
 
             return JsonResponse({
                 "content": content,
@@ -113,7 +113,7 @@ def get_suggestions(request):
 
         # loop through content and extract relevant info
         for item in results:
-            content.append(build_content_data(item))
+            content.append(build_content_data(request, item))
 
         return JsonResponse({
             "content": content,
@@ -163,7 +163,7 @@ def get_genre_suggestions(request):
 
         # loop through content and extract relevant info
         for item in results:
-            content.append(build_content_data(item))
+            content.append(build_content_data(request, item))
 
         return JsonResponse({
             "content": content,
