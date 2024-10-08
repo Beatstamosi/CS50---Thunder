@@ -231,8 +231,7 @@ function createContentCard(content) {
         `<span class="content-card-genre-cards">${genre}</span>`
     ).join(``);
 
-    console.log(genreCards)
-
+    // fill contentCard with data
     contentCard.innerHTML = `
         <div class="contend-card--grid-column1">
             <img class="content-card-image" src="${content.image}">
