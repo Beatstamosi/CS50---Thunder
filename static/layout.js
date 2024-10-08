@@ -19,8 +19,25 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("tv_popular").addEventListener("click", prepareSuggestions);
     document.getElementById("tv_top_rated").addEventListener("click", prepareSuggestions);
 
-    
+    // set up genre-search buttons movie
+    document.querySelectorAll("#choices-genre-suggestions-movie .genre-button").forEach(button => {
+        button.addEventListener("click", () => {
+            const genreId = button.id;
+            const contentType = "movie";
+            getGenreSuggestion(genreId, contentType);
+        })
+    })
+
+    // set up genre-search buttons tv
+    document.querySelectorAll("#choices-genre-suggestions-tv .genre-button").forEach(button => {
+        button.addEventListener("click", () => {
+            const genreId = button.id;
+            const contentType = "tv";
+            getGenreSuggestion(genreId, contentType);
+        })
+    })
 });
+
 
 function prepareSuggestions(event) {
 
@@ -45,10 +62,17 @@ function changePlaceholderSearchbar() {
     const searchBar = document.getElementById("search-bar");
     const movieSuggestions = document.getElementById("choices-movie-suggestions");
     const tvSuggestions = document.getElementById("choices-tv-suggestions");
+    const genreSuggestionsMovie = document.getElementById("choices-genre-suggestions-movie");
+    const genreSuggestionsTv = document.getElementById("choices-genre-suggestions-tv");
 
 
     radioMovies.addEventListener("click", () =>{
-        searchBar.placeholder = "Search for Movies";
+        searchBar.placeholder = "Search for specific Movie";
+
+        searchBar.value = "";
+
+        // in case user was looking for a tv show and wants to see if movies exist with his query
+        getSearchInput();
 
         movieSuggestions.style.display = "flex";
         movieSuggestions.style.visibility = "visible";
@@ -56,26 +80,51 @@ function changePlaceholderSearchbar() {
         tvSuggestions.style.display = "none";
         tvSuggestions.style.visibility = "hidden";
 
+        genreSuggestionsMovie.style.display = "flex";
+        genreSuggestionsMovie.style.display = "visible";
+
+        genreSuggestionsTv.style.display = "none";
+        genreSuggestionsTv.style.display = "hidden";
+
     })
 
     radioTv.addEventListener("click", () => {
-        searchBar.placeholder = "Search for TV Shows";
+        searchBar.placeholder = "Search for specific TV Show";
+
+        // in case user was looking for a movie and wants to see if tv shows exist with his query
+        getSearchInput();
 
         movieSuggestions.style.display = "none";
         movieSuggestions.style.visibility = "hidden";
 
         tvSuggestions.style.display = "flex";
         tvSuggestions.style.visibility = "visible";
+
+        genreSuggestionsMovie.style.display = "none";
+        genreSuggestionsMovie.style.display = "hidden";
+
+        genreSuggestionsTv.style.display = "flex";
+        genreSuggestionsTv.style.display = "visible";
     })
 
     radioPerson.addEventListener("click", () => {
         searchBar.placeholder = "Search for Filmographie of Actor/Director";
+
+        searchBar.value = "";
+
+        clearSuggestions();
 
         movieSuggestions.style.display = "none";
         movieSuggestions.style.visibility = "hidden";
 
         tvSuggestions.style.display = "none";
         tvSuggestions.style.visibility = "hidden";
+
+        genreSuggestionsMovie.style.display = "none";
+        genreSuggestionsMovie.style.display = "hidden";
+
+        genreSuggestionsTv.style.display = "none";
+        genreSuggestionsTv.style.display = "hidden";
     })
 }
 
@@ -112,6 +161,12 @@ function getSearchInput() {
 function clearSuggestions() {
     // clear out search results
     document.getElementById("search-results").innerHTML = "";
+
+    // clear out show more button
+    const showMoreButton = document.querySelector(".container-show-more-button")
+    if (showMoreButton) {
+        showMoreButton.remove()
+    }
 }
 
 
@@ -207,6 +262,8 @@ function showSuggestions(data, futureCall, fInput1, fInput2) {
                 fetchSearchData(fInput1, fInput2, nextPage);
             } else if (futureCall === "ContentSuggestion") {
                 getContentSuggestions(fInput1, fInput2, nextPage);
+            } else if (futureCall === "GenreSuggestions") {
+                getGenreSuggestion(fInput1, fInput2, nextPage)
             }
         })
 
@@ -315,6 +372,38 @@ function getContentSuggestions(suggestionType, keyword, page = 1) {
             const futureCall = "ContentSuggestion";
 
             showSuggestions(data, futureCall, suggestionType, keyword);
+
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(error => {
+        console.error("Error fetching data:", error)
+    })
+}
+
+
+function getGenreSuggestion(genreId, contentType, page = 1) {
+    if (page === 1) {
+        clearSuggestions();
+    }
+
+    fetch("/get-genre-suggestions/", {
+        method: "POST",
+        body: JSON.stringify({
+            genreId: genreId,
+            contentType: contentType,
+            page: page
+        })
+    })
+    .then(async response => {
+        const data = await response.json();
+        if (response.ok) {
+
+            // for each movie/tv show from request render div
+            const futureCall = "GenreSuggestions";
+
+            showSuggestions(data, futureCall, genreId, contentType);
 
         } else {
             alert(data.error);

@@ -9,5 +9,6 @@ urlpatterns = [
     # API calls
     path("search/", views.search, name="search"),
     path("get-suggestions/", views.get_suggestions, name="get-suggestions"),
+    path("get-genre-suggestions/", views.get_genre_suggestions, name="get-gerne-suggestions")
 ]
 
