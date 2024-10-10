@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+    /**
+     * Initialize event listeners and set up the search bar.
+     */
 
     // change text of search bar
     changePlaceholderSearchbar();
@@ -40,6 +43,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function prepareSuggestions(event) {
+    /**
+     * Prepare and fetch content suggestions based on the button clicked.
+
+     Args:
+         event: The click event triggered by the button.
+     */
 
     let suggestionType, keyword;
 
@@ -56,6 +65,10 @@ function prepareSuggestions(event) {
 
 
 function changePlaceholderSearchbar() {
+    /**
+     * Change the placeholder text of the search bar based on selected search type.
+     */
+
     const radioMovies = document.getElementById("movies");
     const radioTv = document.getElementById("tvshow");
     const radioPerson = document.getElementById("person");
@@ -130,6 +143,17 @@ function changePlaceholderSearchbar() {
 
 
 function debounce(func, delay) {
+    /**
+     * Create a debounced version of a function to limit its execution rate.
+
+     Args:
+         func: The function to debounce.
+         delay: The delay in milliseconds.
+
+     Returns:
+         Function: A debounced version of the provided function.
+     */
+
     let timer;
     return(...args) => {
         clearTimeout(timer);
@@ -141,6 +165,10 @@ function debounce(func, delay) {
 
 
 function getSearchInput() {
+    /**
+     * Retrieve user input from the search bar and trigger a search if input is valid.
+     */
+
     const searchbar = document.getElementById("search-bar");
     const searchdata = searchbar.value.trim();
 
@@ -159,6 +187,10 @@ function getSearchInput() {
 
 
 function clearSuggestions() {
+    /**
+     * Clear any existing search suggestions from the UI.
+     */
+
     // clear out search results
     document.getElementById("search-results").innerHTML = "";
 
@@ -171,6 +203,14 @@ function clearSuggestions() {
 
 
 function fetchSearchData(searchData, searchType, page = 1) {
+    /**
+     * Fetch search data from the server based on user input.
+
+     Args:
+         searchData: The search query input by the user.
+         searchType: The type of content to search for (e.g., movie, TV).
+         page: The page number for pagination (default is 1).
+     */
 
     if (page === 1) {
         clearSuggestions();
@@ -207,6 +247,16 @@ function fetchSearchData(searchData, searchType, page = 1) {
 
 
 function showSuggestions(data, futureCall, fInput1, fInput2) {
+    /**
+     * Display search suggestions in the UI based on the fetched data.
+
+     Args:
+         data: The data containing search results.
+         futureCall: A string indicating the type of future call (e.g., "Search").
+         fInput1: The first input parameter for future calls.
+         fInput2: The second input parameter for future calls.
+     */
+
 
     // if exists hide existing showmore button
     const existingShowMoreButton = document.querySelector(".container-show-more-button");
@@ -273,6 +323,13 @@ function showSuggestions(data, futureCall, fInput1, fInput2) {
 
 
 function createContentCard(content) {
+    /**
+     * Create and display a content card for a given content item.
+
+     Args:
+         content: An object containing data for the content item (e.g., title, image, etc.).
+     */
+
     // create empty div
     let contentCard = document.createElement("div");
 
@@ -288,12 +345,30 @@ function createContentCard(content) {
         `<span class="content-card-genre-cards">${genre}</span>`
     ).join(``);
 
+
+    // create button "add to watchlist" OR "remove from Watchlist"
+    const buttonText = content.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
+    const watchlistButton = document.createElement("button");
+    watchlistButton.className = "toggle-watchlist-button " + (content.button === "add" ? "add" : "remove");
+    watchlistButton.id = `watchlist-button-${content.id}`;
+    watchlistButton.textContent = buttonText;
+
+    // add Event Listener to watchlist button
+    watchlistButton.addEventListener("click", () => {
+        toggleWatchlistButton(content, watchlistButton)
+    });
+
+    // if already on watchlist, show "my rating"
+    const myRating = content.user_rating ? `<p class="rating-card-label">My Rating</p>
+        <div class="content-card-rating">${userRating}</div>`: "";
+
+
     // fill contentCard with data
     contentCard.innerHTML = `
-        <div class="contend-card--grid-column1">
+        <div class="content-card--grid-column1">
             <img class="content-card-image" src="${content.image}">
         </div>
-        <div class="contend-card--grid-column2">
+        <div class="content-card--grid-column2">
             <h1 class="content-card-title">${content.title}</h1>
             ${seasonsInfo}
             <div class="content-card-genres">${genreCards}</div>
@@ -301,14 +376,18 @@ function createContentCard(content) {
             <p class="content-card-overview">${content.overview}</p>
             <p class="content-card-actors">Starring: ${content.actors}</p>
             <p class="content-card-director">${directorText}${content.creator}</p>
+            <div class="container-toggle-watchlist-button"></div>
         </div>
-        <div class="contend-card--grid-column3">
+        <div class="content-card--grid-column3">
+            <p class="rating-card-label">User Rating</p>
             <div class="content-card-rating">${content.rating}</div>
+            ${myRating}
         </div>
         `
 
-    // create button "add to watchlist" OR "remove from Watchlist"
-    // if already on watchlist, show "my rating"
+    // append watchlist button to appropriate container
+    const watchlistButtonContainer = contentCard.querySelector(".container-toggle-watchlist-button");
+    watchlistButtonContainer.appendChild(watchlistButton);
     
 
     // show element
@@ -335,6 +414,7 @@ function createContentCard(content) {
     // append to DOM
     document.body.append(contentCard);
 
+
         // set eventlistener for touch (mobile)
     // hide element
         // set eventlistener for hover out (desktop)
@@ -348,6 +428,15 @@ function createContentCard(content) {
 
 
 function getContentSuggestions(suggestionType, keyword, page = 1) {
+     /**
+     * Fetch content suggestions based on the given type and keyword.
+
+     Args:
+         suggestionType: The type of suggestions to fetch (e.g., movie, TV).
+         keyword: The keyword for suggestions.
+         page: The page number for pagination (default is 1).
+     */
+
 
     if (page === 1) {
         clearSuggestions();
@@ -384,6 +473,15 @@ function getContentSuggestions(suggestionType, keyword, page = 1) {
 
 
 function getGenreSuggestion(genreId, contentType, page = 1) {
+    /**
+     * Fetch content suggestions based on genre.
+
+     Args:
+         genreId: The ID of the genre to fetch suggestions for.
+         contentType: The type of content (e.g., movie, TV).
+         page: The page number for pagination (default is 1).
+     */
+
     if (page === 1) {
         clearSuggestions();
     }
@@ -416,6 +514,10 @@ function getGenreSuggestion(genreId, contentType, page = 1) {
 
 
 function ratingScoreVisuals() {
+    /**
+     * Update the visual representation of rating scores in the UI.
+     */
+
     // Only select unprocessed ratings
     const ratings = document.querySelectorAll(".content-card-rating:not(.processed)");
 
@@ -442,4 +544,39 @@ function ratingScoreVisuals() {
     });
 }
 
-    
+
+function toggleWatchlistButton(content, watchlistButton) {
+    /**
+     * Toggle the watchlist status for a specific content item and update the button.
+
+     Args:
+         content: The content object to be added/removed from the watchlist.
+         watchlistButton: The button element that triggers the toggle action.
+     */
+
+    // define action for button
+    const action = watchlistButton.classList.contains("add") ? "add" : "remove";
+
+    // send POST request
+    fetch("/toggle-watchlist/", {
+        method: "POST",
+        body: JSON.stringify({
+            content: content,
+            action: action
+        })
+    }).then(async response => {
+        const data = await response.json();
+        
+        if (response.ok) {
+            // change button class 
+            watchlistButton.className = `toggle-watchlist-button ${data.button}`;
+            watchlistButton.textContent = data.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(error => {
+        console.error("Error fetching data:", error);
+        alert("An error occurred while toggling the watchlist. Please try again.");
+    })
+}

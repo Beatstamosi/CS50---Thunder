@@ -4,17 +4,39 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import requests
+from django.shortcuts import get_object_or_404
+from .models import Content, Watchlist
 
 from watchlist.helpers import build_content_data
 
 
 @login_required
 def index(request):
+    """
+    Render the main watchlist page for authenticated users.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        HttpResponse: Rendered template for the watchlist index page.
+    """
+
     return render(request, "watchlist/index.html")
 
 @csrf_exempt
 @login_required
 def search(request):
+    """
+    Handle search requests for content based on user input.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        JsonResponse: A JSON response containing search results or an error message.
+    """
+
     # Make sure it is a POST request
     if request.method != "POST":
         return JsonResponse({"error": "Post request required."}, status=400)
@@ -78,6 +100,16 @@ def search(request):
 @csrf_exempt
 @login_required
 def get_suggestions(request):
+    """
+    Fetch content suggestions based on the provided suggestion type and keyword.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        JsonResponse: A JSON response with suggested content or an error message.
+    """
+
     if request.method != "POST":
         return JsonResponse({"error": "Request needs to be post."}, status=400)
 
@@ -128,6 +160,16 @@ def get_suggestions(request):
 @csrf_exempt
 @login_required
 def get_genre_suggestions(request):
+    """
+    Retrieve content based on genre suggestions.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        JsonResponse: A JSON response containing genre-based suggestions or an error message.
+    """
+
     if request.method != "POST":
         return JsonResponse({"error": "Request needs to be post."}, status=400)
 
@@ -174,6 +216,95 @@ def get_genre_suggestions(request):
     else:
         return JsonResponse({"error": "Couldn't fetch movie data. Please refresh and try again"}, status=400)
 
+@csrf_exempt
+@login_required
+def toggle_watchlist(request):
+    """
+    Toggle the watchlist status for a specific content item.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success of the action and the updated button state or an error message.
+    """
+
+    if request.method != "POST":
+        return JsonResponse({"error": "Request needs to be post."}, status=400)
+    
+    data = json.loads(request.body)
+    content = data.get("content")
+    action = data.get("action")
+
+    if not content:
+        return JsonResponse({"Error": "Content data is missing"}, status=400)
+
+    if action == "add":
+        # Add to content
+        content_database_entry = Content(
+            title=content.get("title"),
+            overview=content.get("overview"),
+            image_link=content.get("image"),
+            director=content.get("creator"),
+            actors=content.get("actors"),
+            release_date=content.get("release_date"),
+            tmdb_rating=content.get("rating"),
+            tmdb_id=content.get("id"),
+            type=content.get("type")
+        )
+
+        # set genre ids
+        genre_ids = content.get("genre_ids", [])
+        content_database_entry.set_genre_ids(genre_ids)
+
+        # set seasons and episode info if tv show
+        if content.get("seasons"):
+            content_database_entry.seasons = content.get("seasons")
+        if content.get("episodes"):
+            content_database_entry.episodes = content.get("episodes")
+
+        # save entry
+        content_database_entry.save()
+
+        # add to watchlist
+        Watchlist.objects.create(user=request.user, content=content_database_entry)
+
+        # change button value
+        button = "remove"
+
+        # return success
+        return JsonResponse({"Success": "Content successfully added to Watchlist", "button": button}, status=200)
+
+
+    elif action == "remove":
+        # get content
+        content_to_remove = get_object_or_404(Content, tmdb_id=content.get("id"))
+
+        # get watchlist entry
+        watchlist_entry = get_object_or_404(Watchlist, user=request.user, content=content_to_remove)
+
+        # delete from watchlist
+        watchlist_entry.delete()
+
+        # change button value
+        button = "add"
+
+        # return success
+        return JsonResponse({"Success": "Content successfully deleted from Watchlist", "button": button}, status=200)
+    
+
+    return JsonResponse({"error": "Invalid action"}, status=400)
+
+
 
 def watchlist(request):
+    """
+    Render the user's watchlist page.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        HttpResponse: Rendered template for the user's watchlist.
+    """
     return render(request, "watchlist/watchlist.html")

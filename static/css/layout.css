@@ -243,11 +243,11 @@ input[type='radio'] {
 
 
 
-.contend-card--grid-column1 {
+.content-card--grid-column1 {
     grid-column: 1;
 }
 
-.contend-card--grid-column2 {
+.content-card--grid-column2 {
     grid-column: 2;
     display: flex;
     flex-direction: column;
@@ -255,7 +255,7 @@ input[type='radio'] {
 }
 
 
-.contend-card--grid-column3 {
+.content-card--grid-column3 {
     grid-column: 3;
     display: flex;
     flex-direction: column;
@@ -333,6 +333,12 @@ input[type='radio'] {
     border-radius: inherit;
     box-shadow: 0 0 0 1rem var(--background-color);
     z-index: -1;
+  }
+
+  .rating-card-label {
+    color: white;
+    background-color: black;
+    font-weight: 500;
   }
 
 .content-card-actors {
@@ -423,10 +429,27 @@ padding: 5px 8px;
 font-size: 15px;
 }
 
-.genre-button:hover {
+.genre-button:hover,.toggle-watchlist-button:hover {
 background-color: var(--main-orange);
 box-shadow: 0 6px 15px rgba(255, 255, 255, 0.5),
             0 1px 20px rgba(255, 255, 255, 0.3);
 outline: none;
 transform: scale(1.05);
+}
+
+.toggle-watchlist-button {
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    font-weight: 500;
+    margin-top: 15px;
+}
+
+.toggle-watchlist-button.add {
+    background-color: var(--main-orange);
+}
+
+.toggle-watchlist-button.remove {
+    background-color: gray;
 }
