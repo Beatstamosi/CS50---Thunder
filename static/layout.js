@@ -379,7 +379,6 @@ function createContentCard(content) {
             <div class="container-toggle-watchlist-button"></div>
         </div>
         <div class="content-card--grid-column3">
-            <p class="rating-card-label">User Rating</p>
             <div class="content-card-rating">${content.rating}</div>
             ${myRating}
         </div>
@@ -432,8 +431,8 @@ function getContentSuggestions(suggestionType, keyword, page = 1) {
      * Fetch content suggestions based on the given type and keyword.
 
      Args:
-         suggestionType: The type of suggestions to fetch (e.g., movie, TV).
-         keyword: The keyword for suggestions.
+         suggestionType: The type of suggestions to fetch (e.g., popular, top rated, upcoming).
+         keyword: The keyword for suggestions (movie or tv)
          page: The page number for pagination (default is 1).
      */
 
@@ -478,7 +477,7 @@ function getGenreSuggestion(genreId, contentType, page = 1) {
 
      Args:
          genreId: The ID of the genre to fetch suggestions for.
-         contentType: The type of content (e.g., movie, TV).
+         contentType: The type of content (e.g., movie, tv).
          page: The page number for pagination (default is 1).
      */
 

@@ -74,7 +74,7 @@ def search(request):
         if search_type != "person":
             for item in results:
 
-                content.append(build_content_data(item))
+                content.append(build_content_data(request, item))
 
             return JsonResponse({
                 "content": content,
