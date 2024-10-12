@@ -6,6 +6,7 @@ from django.http import JsonResponse
 import requests
 from django.shortcuts import get_object_or_404
 from .models import Content, Watchlist
+from django.core import serializers
 
 from watchlist.helpers import build_content_data
 
@@ -251,8 +252,9 @@ def toggle_watchlist(request):
             actors=content.get("actors"),
             release_date=content.get("release_date"),
             tmdb_rating=content.get("rating"),
-            tmdb_id=content.get("id"),
-            type=content.get("type")
+            tmdb_id=content.get("tmdb_id"),
+            type=content.get("type"),
+            genres=content.get("genres")
         )
 
         # set genre ids
@@ -280,13 +282,16 @@ def toggle_watchlist(request):
 
     elif action == "remove":
         # get content
-        content_to_remove = get_object_or_404(Content, tmdb_id=content.get("id"))
+        content_to_remove = get_object_or_404(Content, tmdb_id=content.get("tmdb_id"))
 
         # get watchlist entry
         watchlist_entry = get_object_or_404(Watchlist, user=request.user, content=content_to_remove)
 
         # delete from watchlist
         watchlist_entry.delete()
+
+        # delete content
+        content_to_remove.delete()
 
         # change button value
         button = "add"
@@ -311,9 +316,30 @@ def watchlist(request):
     """
     watchlist_content = Watchlist.objects.filter(user=request.user).select_related("content")
 
-    print(watchlist_content)
+    content_items = [
+        {
+            'id': item.content.id,
+            'title': item.content.title,
+            'overview': item.content.overview,
+            'image_link': item.content.image_link,
+            'director': item.content.director,
+            'actors': item.content.actors,
+            'release_date': item.content.release_date,
+            'tmdb_rating': item.content.tmdb_rating,
+            'user_rating': item.content.user_rating,
+            'genre_ids': item.content.genre_ids,
+            'genres': item.content.get_genres(),
+            'tmdb_id': item.content.tmdb_id,
+            'seasons': item.content.seasons,
+            'episodes': item.content.episodes,
+            'type': item.content.type,
+        }
+        for item in watchlist_content
+    ]
+
+    print(content_items)
 
     return render(request, "watchlist/watchlist.html", {
         "current_path": request.path,
-        "watchlist_content": watchlist_content
+        "watchlist_content": content_items
     })

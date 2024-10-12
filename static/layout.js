@@ -41,18 +41,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 getGenreSuggestion(genreId, contentType);
             })
         })
-    } else if (currentPage === "/watchlist/") {
+    } 
+    // Watchlist Page Logic
+    else if (currentPage === "/watchlist/") {
+
         // set up toggle switch on watchlist
         const toggle = document.getElementById("toggle");
 
-        toggle.checked = false;
-        toggle.dispatchEvent(new Event("change"));
-
+        // initialize view
         updateVisibilityWatchlistContent(toggle);
 
         toggle.addEventListener("change", () => {
             updateVisibilityWatchlistContent(toggle);
         })
+
 
         // create content cards
 
@@ -293,7 +295,7 @@ function showSuggestions(data, futureCall, fInput1, fInput2) {
         content_container.classList.add("container-search-result");
 
         // set id
-        content_container.setAttribute("id", `content-container${content.id}`)
+        content_container.setAttribute("id", `content-container${content.tmdb_id}`)
 
         content_container.innerHTML = `
             <img class="img-movie-display" src="${content.image}">
@@ -304,7 +306,8 @@ function showSuggestions(data, futureCall, fInput1, fInput2) {
         document.getElementById("search-results").append(content_container);
 
         // create complete movie overview - hide with option to put on watchlist
-        createContentCard(content);
+        const keyword = "search";
+        createContentCard(content, keyword);
 
         } 
     })
@@ -340,7 +343,7 @@ function showSuggestions(data, futureCall, fInput1, fInput2) {
 }
 
 
-function createContentCard(content) {
+function createContentCard(content, keyword) {
     /**
      * Create and display a content card for a given content item.
 
@@ -368,7 +371,7 @@ function createContentCard(content) {
     const buttonText = content.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
     const watchlistButton = document.createElement("button");
     watchlistButton.className = "toggle-watchlist-button " + (content.button === "add" ? "add" : "remove");
-    watchlistButton.id = `watchlist-button-${content.id}`;
+    watchlistButton.id = `watchlist-button-${content.tmdb_id}`;
     watchlistButton.textContent = buttonText;
 
     // add Event Listener to watchlist button
@@ -406,10 +409,17 @@ function createContentCard(content) {
     const watchlistButtonContainer = contentCard.querySelector(".container-toggle-watchlist-button");
     watchlistButtonContainer.appendChild(watchlistButton);
     
+    // Set hover functionality
+    setHoverFunctionality(contentCard, content.tmdb_id, keyword);
 
-    // show element
+    // append to DOM
+    document.body.append(contentCard);
+}
+
+
+function setHoverFunctionality(contentCard, contentId, keyword) {
     // set eventlistener for hover (desktop)
-    const contentContainer = document.getElementById(`content-container${content.id}`)
+    const contentContainer = keyword === "search" ? document.getElementById(`content-container${contentId}`) : document.getElementById(`container-watchlist-item${contentId}`);
 
 
     // create timer variable
@@ -428,10 +438,6 @@ function createContentCard(content) {
     })
 
 
-    // append to DOM
-    document.body.append(contentCard);
-
-
         // set eventlistener for touch (mobile)
     // hide element
         // set eventlistener for hover out (desktop)
@@ -439,7 +445,6 @@ function createContentCard(content) {
         contentCard.style.display = "none";
     })
         // set eventlistener for touch out (mobile)
-    
 }
 
 
@@ -599,30 +604,22 @@ function toggleWatchlistButton(content, watchlistButton) {
 }
 
 function updateVisibilityWatchlistContent(toggle) {
-    
     const toggleButtonLabel = document.getElementById("toggle-label");
     toggleButtonLabel.textContent = toggle.checked ? "Showing TV Shows" : "Showing Movies";
+    const keyword = "watchlist";
 
-    if (!toggle.checked) {
-        // Show Movies
-        document.querySelectorAll(".container-watchlist-items.tv").forEach(item => {
-            item.style.display = "none";
-        })
+    const showType = toggle.checked ? "tv" : "movie";
+    const hideType = toggle.checked ? "movie" : "tv";
 
-        document.querySelectorAll(".container-watchlist-items.movie").forEach(item => {
-            item.style.display = "flex";
-            item.style.visibility = "visible";
-        })
+    // Hide items of the other type
+    document.querySelectorAll(`.container-watchlist-items.${hideType}`).forEach(item => {
+        item.style.display = "none";
+    });
 
-    } else {
-        // Show TV Shows
-        document.querySelectorAll(".container-watchlist-items.movie").forEach(item => {
-            item.style.display = "none";
-        })
-
-        document.querySelectorAll(".container-watchlist-items.tv").forEach(item => {
-            item.style.display = "flex";
-            item.style.visibility = "visible";
-        })
-    }
+    // Show items of the current type
+    document.querySelectorAll(`.container-watchlist-items.${showType}`).forEach(item => {
+        item.style.display = "flex";
+        item.style.visibility = "visible";
+    });
 }
+

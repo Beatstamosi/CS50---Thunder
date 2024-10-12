@@ -12,19 +12,17 @@
                 </label>
                 <label id="toggle-label">Showing Movies</label>
             </div>
-            <div class="container-filter-function-watchlist">
-
-            </div>
+            <div class="container-filter-function-watchlist"></div>
         </div>
         <div class="container-watchlist-content">
             {% for item in watchlist_content %}
-                <div class="container-watchlist-items {{ item.content.type }}">
-                    <img src="{{ item.content.image_link }}">
-                    <span class="overlay-rating watchlist">{{ item.content.tmdb_rating }}</span>
-                    <span class="overlay-rating watchlist user">{{ item.content.user_rating }}</span>
+                <div class="container-watchlist-items {{ item.type }}" id="container-watchlist-item{{ item.tmdb_id }}">
+                    <img src="{{ item.image_link }}">
+                    <span class="overlay-rating watchlist">{{ item.tmdb_rating }}</span>
+                    <span class="overlay-rating watchlist user">{{ item.user_rating }}</span>
+                    <input type="hidden" id="content-{{ item.tmdb_id }}" name="variable" value="{{ item }}">
                 </div>
             {% endfor %}
         </div>
-
     </div>
 {% endblock %}

@@ -153,7 +153,7 @@ input[type='radio'] {
     width: 300px;
 }
 
-.container-search-result:hover {
+.container-search-result:hover, .container-watchlist-items:hover {
     box-shadow: 0 6px 25px rgba(255, 255, 255, 0.5),
                 0 1px 40px rgba(255, 255, 255, 0.3);
     outline: none;
@@ -169,16 +169,6 @@ input[type='radio'] {
     padding: 5px;
     font-weight: bold;
     font-size: 35px;
-}
-
-.overlay-rating.watchlist {
-    font-size: 20px;
-}
-
-.overlay-rating.watchlist.user {
-    left: 0px;
-    font-size: 20px;
-    width: 40px;
 }
 
 .choices-content-suggestion {
@@ -458,7 +448,6 @@ transform: scale(1.05);
     color: white;
     border: none;
     font-weight: 500;
-    margin-top: 15px;
 }
 
 .toggle-watchlist-button.add {
@@ -473,7 +462,6 @@ transform: scale(1.05);
 .container-toggle-watchlist-button {
     display: flex;
     align-items: center;
-    margin: 20px 0;
 }
 
 .switch {
@@ -535,18 +523,35 @@ input:checked + .slider:before {
 .container-watchlist-content {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px;
 }
 
 .container-watchlist-items {
     position: relative;
+    width: 200px;
+    height: 300px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .container-watchlist-items img {
-    width: 200px;
+    width: 100%;
     height: auto;
+    object-fit: cover;
+    display: block;
 }
 
 .container-watchlist-page {
     margin: 40px;
+}
+
+.overlay-rating.watchlist {
+    font-size: 20px;
+}
+
+.overlay-rating.watchlist.user {
+    left: 0px;
+    font-size: 20px;
+    width: 40px;
 }

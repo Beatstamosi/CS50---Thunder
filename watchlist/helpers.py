@@ -7,7 +7,7 @@ def build_content_data(request, item):
     Extracts relevant data from the given data structure and formats it into a dictionary.
     """
     content = {
-        "id": item.get("id"),
+        "tmdb_id": item.get("id"),
         "title": item.get("title") or item.get("name"),
         "release_date": item.get("release_date") or item.get("first_air_date"),
         "rating": round(item.get("vote_average"), 1),
@@ -183,12 +183,12 @@ def get_watchlist_status(request, content):
     )
 
     # check if these ids == content.id
-    if content["id"] in watchlist_content_ids:
+    if content["tmdb_id"] in watchlist_content_ids:
         # if yes add remove from watchlist button
         button = "remove"
 
         # check if my_rating exists
-        watchlist_user_content = Content.objects.get(tmdb_id=content["id"])
+        watchlist_user_content = Content.objects.get(tmdb_id=content["tmdb_id"])
 
         watchlist_user_content_user_rating = watchlist_user_content.user_rating
 
