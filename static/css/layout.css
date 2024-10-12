@@ -30,16 +30,20 @@ footer {
 .user-menu {
     cursor: pointer;
     color: var(--main-orange);
-    margin-right: 70px;
     margin-top: 20px;
-    position: relative;
+    position: absolute;
+    left: 95%;
+}
+
+.user-name {
+    margin-top: 20px;
 }
 
 .dropdown {
     display: none;
     position: absolute;
     top: 100%;
-    transform: translateX(-30%);
+    transform: translateX(-40%);
     color: white;
     z-index: 1000;
     width: 300px;
@@ -52,29 +56,30 @@ footer {
 
 .nav {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
     width: 100%;
     position: relative; 
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .nav-items {
     display: flex;
-    justify-content: center;
-    position: absolute;
-    left: 50%; 
-    transform: translateX(-50%);
     margin-top: 20px;
 }
 
-.nav-item {
-    margin: 0 15px;
+
+.link-active-underlining {
+    border: none;
+    height: 2px;
+    background-color: var(--main-orange);
+    margin: 0;
+    width: 100%;
+    position: relative;
+    top: -5px;
 }
 
 .nav-link {
-    font-weight: bold;
-    font-size: 25px;
+    font-size: 15px;
     color: var(--main-orange);
 }
 
@@ -164,6 +169,16 @@ input[type='radio'] {
     padding: 5px;
     font-weight: bold;
     font-size: 35px;
+}
+
+.overlay-rating.watchlist {
+    font-size: 20px;
+}
+
+.overlay-rating.watchlist.user {
+    left: 0px;
+    font-size: 20px;
+    width: 40px;
 }
 
 .choices-content-suggestion {
@@ -452,4 +467,86 @@ transform: scale(1.05);
 
 .toggle-watchlist-button.remove {
     background-color: gray;
+}
+
+
+.container-toggle-watchlist-button {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: var(--main-orange);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.container-toggle-watchlist-button label {
+    margin-left: 10px;
+    color: #333;
+    font-size: 16px;
+}
+
+#toggle-label {
+    color: white;
+}
+
+/* Watchlist Page Styling */
+.container-watchlist-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.container-watchlist-items {
+    position: relative;
+}
+
+.container-watchlist-items img {
+    width: 200px;
+    height: auto;
+}
+
+.container-watchlist-page {
+    margin: 40px;
 }

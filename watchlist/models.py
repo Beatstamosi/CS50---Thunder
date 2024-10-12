@@ -12,7 +12,7 @@ class Content(models.Model):
     actors = models.TextField(null=True)
     release_date = models.DateField()
     tmdb_rating = models.FloatField()
-    user_rating = models.FloatField(null=True)
+    user_rating = models.FloatField(null=True, default=0)
     genre_ids = models.CharField(max_length=255, blank=True)
     tmdb_id = models.IntegerField(unique=True)
     seasons = models.IntegerField(null=True)
@@ -34,7 +34,7 @@ class Content(models.Model):
         
 
 class Watchlist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="my_watchlist")
     content = models.ForeignKey(Content, on_delete=models.CASCADE, related_name="watchlist")
     added = models.DateTimeField(auto_now_add=True)
 

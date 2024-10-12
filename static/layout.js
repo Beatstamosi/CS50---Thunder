@@ -3,42 +3,60 @@ document.addEventListener("DOMContentLoaded", () => {
      * Initialize event listeners and set up the search bar.
      */
 
-    // change text of search bar
-    changePlaceholderSearchbar();
+    // Javascript for Index Page
+    if (currentPage === "/") {
+        // change text of search bar
+        changePlaceholderSearchbar();
 
-    // create instance of search bar and set delay
-    const searchbar = document.getElementById("search-bar");
-    searchbar.addEventListener("keyup", debounce(getSearchInput, 500));
+        // create instance of search bar and set delay
+        const searchbar = document.getElementById("search-bar");
+        searchbar.addEventListener("keyup", debounce(getSearchInput, 500));
 
-    // set up suggestion buttons movie
-    document.getElementById("movies_now_playing").addEventListener("click", prepareSuggestions);
-    document.getElementById("movies_upcoming").addEventListener("click", prepareSuggestions);
-    document.getElementById("movies_popular").addEventListener("click", prepareSuggestions);
-    document.getElementById("movies_top_rated").addEventListener("click", prepareSuggestions);
+        // set up suggestion buttons movie
+        document.getElementById("movies_now_playing").addEventListener("click", prepareSuggestions);
+        document.getElementById("movies_upcoming").addEventListener("click", prepareSuggestions);
+        document.getElementById("movies_popular").addEventListener("click", prepareSuggestions);
+        document.getElementById("movies_top_rated").addEventListener("click", prepareSuggestions);
 
-    // set up suggestions buttons tv
-    document.getElementById("tv_airing_today").addEventListener("click", prepareSuggestions);
-    document.getElementById("tv_on_the_air").addEventListener("click", prepareSuggestions);
-    document.getElementById("tv_popular").addEventListener("click", prepareSuggestions);
-    document.getElementById("tv_top_rated").addEventListener("click", prepareSuggestions);
+        // set up suggestions buttons tv
+        document.getElementById("tv_airing_today").addEventListener("click", prepareSuggestions);
+        document.getElementById("tv_on_the_air").addEventListener("click", prepareSuggestions);
+        document.getElementById("tv_popular").addEventListener("click", prepareSuggestions);
+        document.getElementById("tv_top_rated").addEventListener("click", prepareSuggestions);
 
-    // set up genre-search buttons movie
-    document.querySelectorAll("#choices-genre-suggestions-movie .genre-button").forEach(button => {
-        button.addEventListener("click", () => {
-            const genreId = button.id;
-            const contentType = "movie";
-            getGenreSuggestion(genreId, contentType);
+        // set up genre-search buttons movie
+        document.querySelectorAll("#choices-genre-suggestions-movie .genre-button").forEach(button => {
+            button.addEventListener("click", () => {
+                const genreId = button.id;
+                const contentType = "movie";
+                getGenreSuggestion(genreId, contentType);
+            })
         })
-    })
 
-    // set up genre-search buttons tv
-    document.querySelectorAll("#choices-genre-suggestions-tv .genre-button").forEach(button => {
-        button.addEventListener("click", () => {
-            const genreId = button.id;
-            const contentType = "tv";
-            getGenreSuggestion(genreId, contentType);
+        // set up genre-search buttons tv
+        document.querySelectorAll("#choices-genre-suggestions-tv .genre-button").forEach(button => {
+            button.addEventListener("click", () => {
+                const genreId = button.id;
+                const contentType = "tv";
+                getGenreSuggestion(genreId, contentType);
+            })
         })
-    })
+    } else if (currentPage === "/watchlist/") {
+        // set up toggle switch on watchlist
+        const toggle = document.getElementById("toggle");
+
+        toggle.checked = false;
+        toggle.dispatchEvent(new Event("change"));
+
+        updateVisibilityWatchlistContent(toggle);
+
+        toggle.addEventListener("change", () => {
+            updateVisibilityWatchlistContent(toggle);
+        })
+
+        // create content cards
+
+    }
 });
 
 
@@ -578,4 +596,33 @@ function toggleWatchlistButton(content, watchlistButton) {
         console.error("Error fetching data:", error);
         alert("An error occurred while toggling the watchlist. Please try again.");
     })
+}
+
+function updateVisibilityWatchlistContent(toggle) {
+    
+    const toggleButtonLabel = document.getElementById("toggle-label");
+    toggleButtonLabel.textContent = toggle.checked ? "Showing TV Shows" : "Showing Movies";
+
+    if (!toggle.checked) {
+        // Show Movies
+        document.querySelectorAll(".container-watchlist-items.tv").forEach(item => {
+            item.style.display = "none";
+        })
+
+        document.querySelectorAll(".container-watchlist-items.movie").forEach(item => {
+            item.style.display = "flex";
+            item.style.visibility = "visible";
+        })
+
+    } else {
+        // Show TV Shows
+        document.querySelectorAll(".container-watchlist-items.movie").forEach(item => {
+            item.style.display = "none";
+        })
+
+        document.querySelectorAll(".container-watchlist-items.tv").forEach(item => {
+            item.style.display = "flex";
+            item.style.visibility = "visible";
+        })
+    }
 }

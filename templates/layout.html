@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <script>
+        const currentPage = "{{ current_path }}";
+    </script>
     <script src="{% static 'layout.js' %}"></script>
 </head>
 <body>
@@ -16,20 +19,23 @@
         </li>
         <div class="nav-items">
             {% if user.is_authenticated %}
-                {% if request.path == "/" %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'watchlist' %}">My Watchlist</a>
-                    </li>
-                {% elif request.path == "/watchlist/" %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}">Search</a>
-                    </li>
-                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">Search</a>
+                    {% if request.path == "/" %}
+                        <hr class="link-active-underlining">
+                    {% endif %}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'watchlist' %}">My Watchlist</a>
+                    {% if request.path == "/watchlist/"%}
+                        <hr class="link-active-underlining">
+                    {% endif %}
+                </li>
             {% endif %}
         </div>
         <div class="user-menu">
             {% if user.is_authenticated %}
-                <span>{{ user.username }}</span>
+                <span class="user-name">{{ user.username }}</span>
                 <ul class="dropdown">
                     <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
                     <li><a href="{% url 'account_logout' %}">Log Out</a></li>

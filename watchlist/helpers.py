@@ -188,7 +188,7 @@ def get_watchlist_status(request, content):
         button = "remove"
 
         # check if my_rating exists
-        watchlist_user_content = Content.objects.filter(tmdb_id=content.id)
+        watchlist_user_content = Content.objects.get(tmdb_id=content["id"])
 
         watchlist_user_content_user_rating = watchlist_user_content.user_rating
 

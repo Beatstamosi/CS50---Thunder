@@ -1,7 +1,30 @@
 {% extends "layout.html" %}
 
-{% block title %}Watchlist{% endblock %}
+{% block title %}My Watchlist{% endblock %}
 
 {% block body %}
-    Placeholder
+    <div class="container-watchlist-page">
+        <div class="watchlist-menu">
+            <div class="container-toggle-watchlist-button">
+                <label class="switch">
+                    <input id="toggle" type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+                <label id="toggle-label">Showing Movies</label>
+            </div>
+            <div class="container-filter-function-watchlist">
+
+            </div>
+        </div>
+        <div class="container-watchlist-content">
+            {% for item in watchlist_content %}
+                <div class="container-watchlist-items {{ item.content.type }}">
+                    <img src="{{ item.content.image_link }}">
+                    <span class="overlay-rating watchlist">{{ item.content.tmdb_rating }}</span>
+                    <span class="overlay-rating watchlist user">{{ item.content.user_rating }}</span>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
 {% endblock %}

@@ -22,7 +22,9 @@ def index(request):
         HttpResponse: Rendered template for the watchlist index page.
     """
 
-    return render(request, "watchlist/index.html")
+    return render(request, "watchlist/index.html", {
+        "current_path": request.path
+    })
 
 @csrf_exempt
 @login_required
@@ -307,4 +309,11 @@ def watchlist(request):
     Returns:
         HttpResponse: Rendered template for the user's watchlist.
     """
-    return render(request, "watchlist/watchlist.html")
+    watchlist_content = Watchlist.objects.filter(user=request.user).select_related("content")
+
+    print(watchlist_content)
+
+    return render(request, "watchlist/watchlist.html", {
+        "current_path": request.path,
+        "watchlist_content": watchlist_content
+    })
