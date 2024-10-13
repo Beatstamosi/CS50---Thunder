@@ -210,6 +210,7 @@ def get_genre_suggestions(request):
         for item in results:
             content.append(build_content_data(request, item))
 
+
         return JsonResponse({
             "content": content,
             "totalPages": total_pages,
@@ -235,6 +236,8 @@ def toggle_watchlist(request):
     if request.method != "POST":
         return JsonResponse({"error": "Request needs to be post."}, status=400)
     
+    
+    # get data 
     data = json.loads(request.body)
     content = data.get("content")
     action = data.get("action")
@@ -247,11 +250,11 @@ def toggle_watchlist(request):
         content_database_entry = Content(
             title=content.get("title"),
             overview=content.get("overview"),
-            image_link=content.get("image"),
-            director=content.get("creator"),
+            image_link=content.get("image_link"),
+            director=content.get("director"),
             actors=content.get("actors"),
             release_date=content.get("release_date"),
-            tmdb_rating=content.get("rating"),
+            tmdb_rating=content.get("tmdb_rating"),
             tmdb_id=content.get("tmdb_id"),
             type=content.get("type"),
             genres=content.get("genres")
@@ -276,10 +279,6 @@ def toggle_watchlist(request):
         # change button value
         button = "remove"
 
-        # return success
-        return JsonResponse({"Success": "Content successfully added to Watchlist", "button": button}, status=200)
-
-
     elif action == "remove":
         # get content
         content_to_remove = get_object_or_404(Content, tmdb_id=content.get("tmdb_id"))
@@ -296,11 +295,13 @@ def toggle_watchlist(request):
         # change button value
         button = "add"
 
-        # return success
-        return JsonResponse({"Success": "Content successfully deleted from Watchlist", "button": button}, status=200)
-    
+    # Determine where to redirect based on the referrer or path
+    referer = request.META.get('HTTP_REFERER', '')
 
-    return JsonResponse({"error": "Invalid action"}, status=400)
+    if 'watchlist' in referer:  # Indicates the watchlist page
+        return JsonResponse({"Success": "Content successfully toggled", "button": button, "path": "/watchlist/"}, status=200)
+    else:
+        return JsonResponse({"Success": "Content successfully toggled", "button": button, "path": "/"}, status=200)
 
 
 
@@ -324,7 +325,7 @@ def watchlist(request):
             'image_link': item.content.image_link,
             'director': item.content.director,
             'actors': item.content.actors,
-            'release_date': item.content.release_date,
+            'release_date': item.content.formatted_release_date(),
             'tmdb_rating': item.content.tmdb_rating,
             'user_rating': item.content.user_rating,
             'genre_ids': item.content.genre_ids,
@@ -336,8 +337,6 @@ def watchlist(request):
         }
         for item in watchlist_content
     ]
-
-    print(content_items)
 
     return render(request, "watchlist/watchlist.html", {
         "current_path": request.path,

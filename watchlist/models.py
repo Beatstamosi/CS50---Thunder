@@ -28,6 +28,9 @@ class Content(models.Model):
         if self.user_rating is not None and (self.user_rating < 0 or self.user_rating > 10):
             raise ValidationError("User Rating must be between 0 and 10.")
         
+    def formatted_release_date(self):
+        return self.release_date.strftime('%Y-%m-%d')
+        
     def set_genre_ids(self, genre_ids):
         self.genre_ids = ','.join(map(str, genre_ids))
 

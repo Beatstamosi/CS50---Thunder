@@ -10,9 +10,9 @@ def build_content_data(request, item):
         "tmdb_id": item.get("id"),
         "title": item.get("title") or item.get("name"),
         "release_date": item.get("release_date") or item.get("first_air_date"),
-        "rating": round(item.get("vote_average"), 1),
+        "tmdb_rating": round(item.get("vote_average"), 1),
         "overview": item.get("overview"),
-        "image": (
+        "image_link": (
             f"https://image.tmdb.org/t/p/w342/{item.get('poster_path')}"
             if item.get("poster_path")
             else None
@@ -24,10 +24,10 @@ def build_content_data(request, item):
     content_type = content.get("type")
     content_id = item.get("id")
 
-    actors, creator = get_cast(content_id, content_type)
+    actors, director = get_cast(content_id, content_type)
 
     content["actors"] = ", ".join(actors)
-    content["creator"] = ", ".join(creator)
+    content["director"] = ", ".join(director)
 
     # get number of seasons and episodes
     if content_type == "tv":
@@ -85,14 +85,14 @@ def get_cast(id, content_type):
 
     # get director / producer
     crew = response.json().get("crew", [])
-    creator = [
+    director = [
         person["name"]
         for person in crew
         if (content_type == "movie" and person.get("job") == "Director")
         or (content_type == "tv" and person.get("job") == "Executive Producer")
     ]
 
-    return actors, creator
+    return actors, director
 
 
 def get_episode_info(id):

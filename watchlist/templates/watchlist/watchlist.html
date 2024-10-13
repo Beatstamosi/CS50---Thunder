@@ -20,7 +20,7 @@
                     <img src="{{ item.image_link }}">
                     <span class="overlay-rating watchlist">{{ item.tmdb_rating }}</span>
                     <span class="overlay-rating watchlist user">{{ item.user_rating }}</span>
-                    <input type="hidden" id="content-{{ item.tmdb_id }}" name="variable" value="{{ item }}">
+                    {{ item|json_script }}
                 </div>
             {% endfor %}
         </div>

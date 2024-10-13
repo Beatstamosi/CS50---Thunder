@@ -288,7 +288,7 @@ function showSuggestions(data, futureCall, fInput1, fInput2) {
     // loop through each content
     data.content.forEach(content => {
 
-        if (content.image) {
+        if (content.image_link) {
 
         // create div
         content_container = document.createElement("div");
@@ -298,8 +298,8 @@ function showSuggestions(data, futureCall, fInput1, fInput2) {
         content_container.setAttribute("id", `content-container${content.tmdb_id}`)
 
         content_container.innerHTML = `
-            <img class="img-movie-display" src="${content.image}">
-            <span class="overlay-rating">${content.rating}</span>
+            <img class="img-movie-display" src="${content.image_link}">
+            <span class="overlay-rating">${content.tmdb_rating}</span>
         `
 
         // append to 
@@ -355,6 +355,7 @@ function createContentCard(content, keyword) {
     let contentCard = document.createElement("div");
 
     contentCard.classList.add("container-content-card");
+    contentCard.setAttribute("id", `content-card-${content.tmdb_id}`);
 
     // fill with content data
     const contentType = content.type;
@@ -380,14 +381,20 @@ function createContentCard(content, keyword) {
     });
 
     // if already on watchlist, show "my rating"
-    const myRating = content.user_rating ? `<p class="rating-card-label">My Rating</p>
-        <div class="content-card-rating">${userRating}</div>`: "";
+    const userRating = content.user_rating ? content.userRating : 0;
+    const myRating = document.createElement("div");
+    myRating.classList.add("user-rating-content-card");
+    myRating.innerHTML = `<p class="rating-card-label">My Rating</p><div class="content-card-rating">${userRating}</div>`;
+    if (watchlistButton.classList.contains("remove")) {
+        myRating.style.display = "flex";
+    } 
+
 
 
     // fill contentCard with data
     contentCard.innerHTML = `
         <div class="content-card--grid-column1">
-            <img class="content-card-image" src="${content.image}">
+            <img class="content-card-image" src="${content.image_link}">
         </div>
         <div class="content-card--grid-column2">
             <h1 class="content-card-title">${content.title}</h1>
@@ -396,18 +403,20 @@ function createContentCard(content, keyword) {
             <p class="content-card-release-date">Release Date: ${content.release_date}</p>
             <p class="content-card-overview">${content.overview}</p>
             <p class="content-card-actors">Starring: ${content.actors}</p>
-            <p class="content-card-director">${directorText}${content.creator}</p>
+            <p class="content-card-director">${directorText}${content.director}</p>
             <div class="container-toggle-watchlist-button"></div>
         </div>
         <div class="content-card--grid-column3">
-            <div class="content-card-rating">${content.rating}</div>
-            ${myRating}
+            <div class="content-card-rating">${content.tmdb_rating}</div>
         </div>
         `
 
     // append watchlist button to appropriate container
     const watchlistButtonContainer = contentCard.querySelector(".container-toggle-watchlist-button");
     watchlistButtonContainer.appendChild(watchlistButton);
+
+    // append my Rating to container
+    contentCard.querySelector(".content-card--grid-column3").appendChild(myRating);
     
     // Set hover functionality
     setHoverFunctionality(contentCard, content.tmdb_id, keyword);
@@ -590,9 +599,25 @@ function toggleWatchlistButton(content, watchlistButton) {
         const data = await response.json();
         
         if (response.ok) {
-            // change button class 
-            watchlistButton.className = `toggle-watchlist-button ${data.button}`;
-            watchlistButton.textContent = data.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
+             
+            const contentCard = document.getElementById(`content-card-${content.tmdb_id}`);
+
+            // if request came from search page
+            if (data.path === "/") {
+                // change button class
+                watchlistButton.className = `toggle-watchlist-button ${data.button}`;
+                watchlistButton.textContent = data.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
+
+                // show user rating
+                const userRating = contentCard.querySelector(".user-rating-content-card");
+                userRating.style.display = data.button === "add" ? "none" : "flex";
+
+            // if request came from watchlist page remove item
+            } else {
+                contentCard.remove()
+                document.getElementById(`container-watchlist-item${content.tmdb_id}`).remove();
+            }
+
         } else {
             alert(data.error);
         }
@@ -620,6 +645,16 @@ function updateVisibilityWatchlistContent(toggle) {
     document.querySelectorAll(`.container-watchlist-items.${showType}`).forEach(item => {
         item.style.display = "flex";
         item.style.visibility = "visible";
+
+        const itemData = item.querySelector("script").textContent;
+        const itemDataJson = JSON.parse(itemData);
+        const keyword = "watchlist";
+        console.log(itemDataJson);
+        
+        createContentCard(itemDataJson, keyword);
     });
+
+    // Rating Circle Score Visuals
+    ratingScoreVisuals();
 }
 

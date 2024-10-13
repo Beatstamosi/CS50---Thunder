@@ -555,3 +555,10 @@ input:checked + .slider:before {
     font-size: 20px;
     width: 40px;
 }
+
+.user-rating-content-card {
+    display: none; /* Default value */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
