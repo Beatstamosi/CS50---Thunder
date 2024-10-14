@@ -562,3 +562,15 @@ input:checked + .slider:before {
     justify-content: center;
     align-items: center;
 }
+
+.user-rating-content-card .content-card-rating {
+    cursor: pointer;
+}
+
+.watchlist-menu {
+    margin-bottom: 20px;
+}
+
+.hidden {
+    display: none;
+}

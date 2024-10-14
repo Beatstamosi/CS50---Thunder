@@ -327,7 +327,7 @@ def watchlist(request):
             'actors': item.content.actors,
             'release_date': item.content.formatted_release_date(),
             'tmdb_rating': item.content.tmdb_rating,
-            'user_rating': item.content.user_rating,
+            'user_rating': 10 if item.content.user_rating == 10 else item.content.user_rating,
             'genre_ids': item.content.genre_ids,
             'genres': item.content.get_genres(),
             'tmdb_id': item.content.tmdb_id,
@@ -342,3 +342,50 @@ def watchlist(request):
         "current_path": request.path,
         "watchlist_content": content_items
     })
+
+
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+
+@csrf_exempt
+@login_required
+def update_user_rating(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Request needs to be POST."}, status=400)
+
+    try:
+        # Get data
+        data = json.loads(request.body)
+
+        # Validate inputs
+        new_rating = data.get("newRating")
+        tmdb_id = data.get("tmdbId")
+
+        if new_rating is None or tmdb_id is None:
+            return JsonResponse({"error": "Both newRating and tmdbId are required."}, status=400)
+
+        # Check if the new_rating is a valid number
+        try:
+            new_rating = float(new_rating)
+        except ValueError:
+            return JsonResponse({"error": "Invalid rating value. Must be a number."}, status=400)
+
+        # Check if the rating is within an acceptable range (e.g., 0 to 10)
+        if new_rating < 0 or new_rating > 10:
+            return JsonResponse({"error": "Rating must be between 0 and 10."}, status=400)
+
+        # Retrieve content and update rating
+        content = get_object_or_404(Content, tmdb_id=tmdb_id)
+        content.user_rating = new_rating
+        content.save()
+
+        return JsonResponse({"success": "Rating successfully updated"}, status=200)
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON provided."}, status=400)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

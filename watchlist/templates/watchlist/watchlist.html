@@ -19,7 +19,7 @@
                 <div class="container-watchlist-items {{ item.type }}" id="container-watchlist-item{{ item.tmdb_id }}">
                     <img src="{{ item.image_link }}">
                     <span class="overlay-rating watchlist">{{ item.tmdb_rating }}</span>
-                    <span class="overlay-rating watchlist user">{{ item.user_rating }}</span>
+                    <span class="overlay-rating watchlist user {% if item.user_rating == 0 %}hidden{% endif %}">{{ item.user_rating }}</span>
                     {{ item|json_script }}
                 </div>
             {% endfor %}

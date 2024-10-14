@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const contentType = "tv";
                 getGenreSuggestion(genreId, contentType);
             })
-        })
+        });
     } 
     // Watchlist Page Logic
     else if (currentPage === "/watchlist/") {
@@ -54,10 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
         toggle.addEventListener("change", () => {
             updateVisibilityWatchlistContent(toggle);
         })
-
-
-        // create content cards
-
     }
 });
 
@@ -381,10 +377,10 @@ function createContentCard(content, keyword) {
     });
 
     // if already on watchlist, show "my rating"
-    const userRating = content.user_rating ? content.userRating : 0;
+    const userRating = content.user_rating ? content.user_rating : 0;
     const myRating = document.createElement("div");
     myRating.classList.add("user-rating-content-card");
-    myRating.innerHTML = `<p class="rating-card-label">My Rating</p><div class="content-card-rating">${userRating}</div>`;
+    myRating.innerHTML = `<p class="rating-card-label">My Rating</p><div class="content-card-rating" id="content-card-user-rating-${content.tmdb_id}">${userRating}</div>`;
     if (watchlistButton.classList.contains("remove")) {
         myRating.style.display = "flex";
     } 
@@ -423,6 +419,9 @@ function createContentCard(content, keyword) {
 
     // append to DOM
     document.body.append(contentCard);
+
+    // allow user to change "my rating"
+    enableRatingInteraction();
 }
 
 
@@ -553,7 +552,10 @@ function ratingScoreVisuals() {
     const ratings = document.querySelectorAll(".content-card-rating:not(.processed)");
 
     ratings.forEach((rating) => {
-        const ratingScore = parseFloat(rating.innerHTML.trim()); 
+        let ratingScore = parseFloat(rating.innerHTML.trim()); 
+
+        // Convert 10.0 to 10 for display
+        ratingScore = ratingScore === 10.0 ? 10 : ratingScore.toFixed(1);
 
         // Check if the ratingScore is valid
         if (!isNaN(ratingScore)) {
@@ -563,7 +565,8 @@ function ratingScoreVisuals() {
             rating.setAttribute("style", gradient);
             
             // Wrap the content in a span
-            rating.innerHTML = `<span>${ratingScore.toFixed(1)}</span>`; 
+            // Convert 10.0 to 10 for display
+            rating.innerHTML = `<span>${ratingScore}</span>`; 
 
             // mark rating as processed
             rating.classList.add("processed");
@@ -658,3 +661,100 @@ function updateVisibilityWatchlistContent(toggle) {
     ratingScoreVisuals();
 }
 
+function enableRatingInteraction() {
+    const userRatings = document.querySelectorAll(".user-rating-content-card");
+
+    userRatings.forEach((userRating) => {
+        const ratings = userRating.querySelectorAll(".content-card-rating");
+
+        ratings.forEach((rating) => {
+            let isDragging = false;
+
+            const updateRating = (event) => {
+                // Prevent default to avoid text selection
+                console.log("Updating rating...");
+                event.preventDefault();
+
+                // Calculate the new rating based on the mouse/touch position
+                const rect = rating.getBoundingClientRect();
+                const ratingSize = rect.width; 
+                const offsetX = event.clientX ? event.clientX - rect.left : event.touches[0].clientX - rect.left;
+
+                // Calculate the new rating with one decimal point
+                const newRating = parseFloat(((offsetX / ratingSize) * 10).toFixed(1));
+
+                // Update the rating display
+                if (newRating >= 0 && newRating <= 10) {
+                    // Update only the current rating being interacted with
+                    userRatingScoreVisuals(newRating, rating); // Pass the specific rating
+                    saveUserRating(newRating, rating);
+                }
+            };
+
+            const startDrag = (event) => {
+                isDragging = true;
+                updateRating(event); // Update immediately on start
+            };
+
+            const endDrag = () => {
+                isDragging = false;
+            };
+
+            // Event listeners for desktop
+            rating.addEventListener("mousedown", startDrag);
+            document.addEventListener("mousemove", (event) => {
+                if (isDragging) updateRating(event);
+            });
+            document.addEventListener("mouseup", endDrag);
+
+            // Event listeners for mobile
+            rating.addEventListener("touchstart", startDrag);
+            rating.addEventListener("touchmove", (event) => {
+                if (isDragging) updateRating(event);
+            });
+            document.addEventListener("touchend", endDrag);
+        });
+    });
+}
+
+
+function userRatingScoreVisuals(newRating, rating) {
+    // Convert 10.0 to 10 for display
+    newRating = newRating === 10.0 ? 10 : newRating.toFixed(1);
+
+    const gradient = `background: conic-gradient(#db4a2b ${newRating * 10}%, transparent 0 100%)`;
+    rating.setAttribute("style", gradient);
+    rating.innerHTML = `<span>${newRating}</span>`;
+}
+
+
+function saveUserRating(newRating, rating) {
+    // get tmdbId to access in database
+    const tmdbId = Number(rating.id.split("content-card-user-rating-")[1]);
+
+    // make api call to save
+    fetch("/update-user-rating/", {
+        method: "post",
+        body: JSON.stringify({
+            newRating: newRating,
+            tmdbId: tmdbId
+        })
+    }).then(async response => {
+        const data = await response.json();
+
+        if (response.ok) {
+            // update overlay rating on watchlist item
+            const watchlistItem = document.getElementById(`container-watchlist-item${tmdbId}`);
+
+            // if user is on watchlist page
+            if (watchlistItem) {
+                const overlayUserRating = watchlistItem.querySelector(".overlay-rating.watchlist.user");
+                overlayUserRating.textContent = `${newRating}`;
+                overlayUserRating.style.display = "flex";
+            }
+            
+        } else {
+            alert(data.error);
+        }
+    });
+}

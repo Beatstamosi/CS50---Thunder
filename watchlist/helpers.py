@@ -190,14 +190,11 @@ def get_watchlist_status(request, content):
         # check if my_rating exists
         watchlist_user_content = Content.objects.get(tmdb_id=content["tmdb_id"])
 
-        watchlist_user_content_user_rating = watchlist_user_content.user_rating
+        user_rating = watchlist_user_content.user_rating
 
         # if yes pass my_rating
-        if watchlist_user_content_user_rating:
-            user_rating = watchlist_user_content_user_rating
-
+        if user_rating:
             return button, user_rating
-
         else:
             return button, None
 
