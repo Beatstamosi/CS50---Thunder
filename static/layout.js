@@ -538,7 +538,7 @@ function getRecommendations(tmdbId, type, recommendationsDiv) {
                     // Create watchlist button
                     const buttonText = content.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
                     const watchlistButton = document.createElement("button");
-                    watchlistButton.className = "toggle-watchlist-button recommendations " + (content.button === "add" ? "add" : "remove");
+                    watchlistButton.className = "toggle-watchlist-button recommendations-display " + (content.button === "add" ? "add" : "remove");
                     watchlistButton.id = `watchlist-button-${content.tmdb_id}`;
                     watchlistButton.textContent = buttonText;
 
@@ -761,9 +761,9 @@ function toggleWatchlistButton(content, watchlistButton) {
                 userRating.style.display = data.button === "add" ? "none" : "flex";
 
             // if request came from recommendation suggestions 
-            } else if (watchlistButton.classList.contains("recommendations")) {
+            } else if (watchlistButton.classList.contains("recommendations-display")) {
                 // change button class
-                watchlistButton.className = `toggle-watchlist-button ${data.button}`;
+                watchlistButton.className = `toggle-watchlist-button recommendations-display ${data.button}`;
                 watchlistButton.textContent = data.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
 
                 // make image show up in watchlist
