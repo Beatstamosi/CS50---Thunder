@@ -242,8 +242,10 @@ input[type='radio'] {
     overflow: auto;
     box-shadow: 0 6px 25px rgba(255, 255, 255, 0.5),
                 0 1px 40px rgba(255, 255, 255, 0.3);
-    display: none;
     grid-template-columns: 35% 45% 20%;
+    overflow: hidden;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 
@@ -573,4 +575,96 @@ input:checked + .slider:before {
 
 .hidden {
     display: none;
+}
+
+.show-recommendations {
+    color: white;
+    font-size: 15px;
+    grid-column: 1 / -1;
+    margin-top: 15px;
+}
+
+.show-recommendations span {
+    cursor: pointer;
+}
+
+.arrow {
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+  }
+  
+  .right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+  }
+
+  .down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    margin-left: 5px;
+  }
+
+  .recommendations {
+    display: flex; 
+    overflow: auto; 
+    white-space: nowrap; 
+    border: 1px var(--main-orange) solid;
+    padding: 10px; 
+    margin-top: 15px; 
+    grid-column: 1 / -1;
+    margin-right: 30px;
+    max-width: 100%;
+}
+
+.container-recommendations-result {
+    position: relative;
+    width: 200px; 
+    height: 350px; 
+    margin-right: 10px; 
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.container-recommendations-result img {
+    width: 100%; 
+    height: 100%;
+    object-fit: cover; 
+}
+
+.overlay-rating.recommendation {
+    font-size: 18px;
+}
+
+.loading-placeholder {
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.search {
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.loading-spinner {
+    border: 10px solid rgba(255, 255, 255, 0.3);
+    border-top: 10px solid var(--main-orange);
+    border-radius: 50%;
+    width: 50px; 
+    height: 50px; 
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#placeholder-loading-animation {
+    margin-top: 40px;
 }

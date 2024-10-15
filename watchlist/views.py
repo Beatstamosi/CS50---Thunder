@@ -344,11 +344,6 @@ def watchlist(request):
     })
 
 
-import json
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
 
 @csrf_exempt
 @login_required
@@ -373,7 +368,7 @@ def update_user_rating(request):
         except ValueError:
             return JsonResponse({"error": "Invalid rating value. Must be a number."}, status=400)
 
-        # Check if the rating is within an acceptable range (e.g., 0 to 10)
+        # Check if the rating is within an acceptable range (0 to 10)
         if new_rating < 0 or new_rating > 10:
             return JsonResponse({"error": "Rating must be between 0 and 10."}, status=400)
 
@@ -389,3 +384,61 @@ def update_user_rating(request):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+
+
+@csrf_exempt
+@login_required
+def get_recommendations(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Request needs to be POST."}, status=400)
+    
+    try:
+        # Get data
+        data = json.loads(request.body)
+
+        # Validate inputs
+        tmdb_id = data.get("tmdbId")
+        type = data.get("type")
+
+        if type is None or tmdb_id is None:
+            return JsonResponse({"error": "Both type and tmdbId are required."}, status=400)
+        
+        # make api call to get recommendations
+        url = f"https://api.themoviedb.org/3/{type}/{tmdb_id}/recommendations?language=en-US&page=1"
+
+        headers = {
+            "accept": "application/json",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YThhNWU3Mzc5NjliNmQ3ZDI4Y2NlNjJjNGRmNWNkMCIsIm5iZiI6MTcyNzU1NzgwMS44OTk3MzUsInN1YiI6IjY2NWU0OTUzZWNiYTJlMzAyODUxNDY0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.A4l3HBwbieBa6vr9TGySOndio7HUJ8TS454W61pefvk"
+        }
+
+        response = requests.get(url, headers=headers)
+
+        # prepare empty list to fill with content data
+        content = []
+
+        if response.status_code == 200:
+
+            # get only the movie / tv show data
+            results = response.json().get("results", [])
+
+            # loop through content and extract relevant info
+            for item in results:
+                content.append(build_content_data(request, item))
+
+            return JsonResponse({
+                "content": content,
+            }, safe=False)
+
+
+        else:
+            return JsonResponse({"error": "Couldn't fetch movie data. Please refresh and try again"}, status=400)
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON provided."}, status=400)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+

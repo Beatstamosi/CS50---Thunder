@@ -217,6 +217,29 @@ function clearSuggestions() {
     }
 }
 
+function placeholderSearch() {
+    // Create placeholder while loading
+    const placeholderLoading = document.createElement("div");
+    placeholderLoading.className = "loading-placeholder search";
+    placeholderLoading.setAttribute("id", "placeholder-loading-screen-search-page")
+
+    const spinner = document.createElement("div");
+    spinner.className = "loading-spinner";
+
+    // Append spinner and text
+    placeholderLoading.append(spinner);
+
+    const searchResultsloaded = document.querySelector(".container-show-more-button");
+    
+    document.getElementById("placeholder-loading-animation").append(placeholderLoading);
+
+}
+
+
+function placeholderSearchRemove() {
+    document.getElementById("placeholder-loading-screen-search-page").remove();
+}
+
 
 function fetchSearchData(searchData, searchType, page = 1) {
     /**
@@ -227,6 +250,9 @@ function fetchSearchData(searchData, searchType, page = 1) {
          searchType: The type of content to search for (e.g., movie, TV).
          page: The page number for pagination (default is 1).
      */
+
+    // create placeholder while loading
+    placeholderSearch();
 
     if (page === 1) {
         clearSuggestions();
@@ -251,6 +277,7 @@ function fetchSearchData(searchData, searchType, page = 1) {
             const futureCall = "Search";
 
             showSuggestions(data, futureCall, searchData, searchType);
+            placeholderSearchRemove();
 
         } else {
             alert(data.error);
@@ -346,8 +373,7 @@ function createContentCard(content, keyword) {
      Args:
          content: An object containing data for the content item (e.g., title, image, etc.).
      */
-
-    // create empty div
+    // create empty div 
     let contentCard = document.createElement("div");
 
     contentCard.classList.add("container-content-card");
@@ -422,6 +448,114 @@ function createContentCard(content, keyword) {
 
     // allow user to change "my rating"
     enableRatingInteraction();
+
+    // Create recommendations div
+    if (currentPage === "/watchlist/") {
+        const showRecommendations = document.createElement("div");
+        const spanText = document.createElement("span");
+        const arrowIcon = document.createElement("i");
+
+        spanText.textContent = `Show Recommendations based on ${content.title}`;
+        arrowIcon.className = "arrow right";
+
+        spanText.appendChild(arrowIcon);
+        showRecommendations.appendChild(spanText);
+        showRecommendations.className = "show-recommendations";
+
+        spanText.addEventListener("click", () => {
+            // Check if recommendationsDiv already exists
+            let recommendationsContent = contentCard.querySelector(".recommendations");
+        
+            if (recommendationsContent) {
+                // Toggle visibility
+                const isCurrentlyVisible = recommendationsContent.style.display === "flex";
+                recommendationsContent.style.display = isCurrentlyVisible ? "none" : "flex"; 
+
+                // Toggle the arrow class
+                arrowIcon.classList.toggle("right", isCurrentlyVisible);
+                arrowIcon.classList.toggle("down", !isCurrentlyVisible);
+
+            } else {
+                // Create recommendationsDiv
+                recommendationsContent = document.createElement("div");
+                recommendationsContent.className = "recommendations"; 
+                recommendationsContent.style.display = "flex";
+
+                arrowIcon.classList.toggle("down");
+        
+                showRecommendations.append(recommendationsContent);
+
+                // Only fetch recommendations if the content div is empty
+                getRecommendations(content.tmdb_id, content.type, recommendationsContent);
+            }
+            
+            // Scroll to the bottom of the recommendations content
+            contentCard.scrollTop = contentCard.scrollHeight;
+        });
+
+        // Append the recommendations div outside the grid columns
+        contentCard.appendChild(showRecommendations);
+    }
+}
+
+
+function getRecommendations(tmdbId, type, recommendationsDiv) {
+
+    // create placeholder while loading
+    const placeholderLoading = document.createElement("div");
+    placeholderLoading.className = "loading-placeholder";
+    placeholderLoading.textContent = "Loading..."
+    recommendationsDiv.append(placeholderLoading);
+
+
+    fetch("/recommendations/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            // Include CSRF token if needed
+        },
+        body: JSON.stringify({
+            tmdbId: tmdbId,
+            type: type,
+        })
+    }).then(async response => {
+        const data = await response.json();
+        if (response.ok) {
+
+            placeholderLoading.remove();
+
+            data.content.forEach(content => {
+                if (content.image_link) {
+                    const recommendationsContentContainer = document.createElement("div");
+                    recommendationsContentContainer.classList.add("container-recommendations-result");
+                    recommendationsContentContainer.setAttribute("id", `container-recommendations-result${content.tmdb_id}`);
+                    
+                    recommendationsContentContainer.innerHTML = `
+                        <img class="img-movie-display" src="${content.image_link}">
+                        <span class="overlay-rating recommendation">${content.tmdb_rating}</span>
+                    `;
+
+                    // Create watchlist button
+                    const buttonText = content.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
+                    const watchlistButton = document.createElement("button");
+                    watchlistButton.className = "toggle-watchlist-button recommendations " + (content.button === "add" ? "add" : "remove");
+                    watchlistButton.id = `watchlist-button-${content.tmdb_id}`;
+                    watchlistButton.textContent = buttonText;
+
+                    watchlistButton.addEventListener("click", () => {
+                        toggleWatchlistButton(content, watchlistButton);
+                    });
+
+                    recommendationsContentContainer.append(watchlistButton);
+                    recommendationsDiv.append(recommendationsContentContainer);
+                } 
+            });
+        } else {
+            alert(data.error);
+        }
+    }).catch(error => {
+        console.error("Error fetching data:", error);
+    });
 }
 
 
@@ -467,6 +601,8 @@ function getContentSuggestions(suggestionType, keyword, page = 1) {
          page: The page number for pagination (default is 1).
      */
 
+    // set up placeholder loading screen
+    placeholderSearch();
 
     if (page === 1) {
         clearSuggestions();
@@ -492,6 +628,9 @@ function getContentSuggestions(suggestionType, keyword, page = 1) {
 
             showSuggestions(data, futureCall, suggestionType, keyword);
 
+            // remove placeholder loading screen
+            placeholderSearchRemove();
+
         } else {
             alert(data.error);
         }
@@ -512,6 +651,9 @@ function getGenreSuggestion(genreId, contentType, page = 1) {
          page: The page number for pagination (default is 1).
      */
 
+    // set up placeholder loading screen
+    placeholderSearch();
+    
     if (page === 1) {
         clearSuggestions();
     }
@@ -532,6 +674,9 @@ function getGenreSuggestion(genreId, contentType, page = 1) {
             const futureCall = "GenreSuggestions";
 
             showSuggestions(data, futureCall, genreId, contentType);
+
+            // remove placeholder loading screen
+            placeholderSearchRemove();
 
         } else {
             alert(data.error);
@@ -615,8 +760,20 @@ function toggleWatchlistButton(content, watchlistButton) {
                 const userRating = contentCard.querySelector(".user-rating-content-card");
                 userRating.style.display = data.button === "add" ? "none" : "flex";
 
+            // if request came from recommendation suggestions 
+            } else if (watchlistButton.classList.contains("recommendations")) {
+                // change button class
+                watchlistButton.className = `toggle-watchlist-button ${data.button}`;
+                watchlistButton.textContent = data.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
+
+                // make image show up in watchlist
+                    // collect all ids from page
+                    // if list does not contain content.tmdb_id then create div similar to watchlist.html
+                    // create contentcard for image
+
+            } 
             // if request came from watchlist page remove item
-            } else {
+            else {
                 contentCard.remove()
                 document.getElementById(`container-watchlist-item${content.tmdb_id}`).remove();
             }
@@ -672,7 +829,6 @@ function enableRatingInteraction() {
 
             const updateRating = (event) => {
                 // Prevent default to avoid text selection
-                console.log("Updating rating...");
                 event.preventDefault();
 
                 // Calculate the new rating based on the mouse/touch position
