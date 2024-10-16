@@ -424,7 +424,10 @@ def get_recommendations(request):
 
             # loop through content and extract relevant info
             for item in results:
-                content.append(build_content_data(request, item))
+                content_data = (build_content_data(request, item))
+                # only append if item is not already on watchlist
+                if content_data["button"] != "remove":
+                    content.append(content_data)
 
             return JsonResponse({
                 "content": content,

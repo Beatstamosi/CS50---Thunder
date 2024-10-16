@@ -510,10 +510,6 @@ function getRecommendations(tmdbId, type, recommendationsDiv) {
 
     fetch("/recommendations/", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            // Include CSRF token if needed
-        },
         body: JSON.stringify({
             tmdbId: tmdbId,
             type: type,
@@ -762,15 +758,46 @@ function toggleWatchlistButton(content, watchlistButton) {
 
             // if request came from recommendation suggestions 
             } else if (watchlistButton.classList.contains("recommendations-display")) {
-                // change button class
-                watchlistButton.className = `toggle-watchlist-button recommendations-display ${data.button}`;
-                watchlistButton.textContent = data.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
+                
+                // delete item from suggestions
+                document.getElementById(`container-recommendations-result${content.tmdb_id}`).remove();
 
                 // make image show up in watchlist
                     // collect all ids from page
-                    // if list does not contain content.tmdb_id then create div similar to watchlist.html
-                    // create contentcard for image
+                    const itemContainers = document.querySelectorAll("container-watchlist-items");
 
+                    let idArray = [];
+
+                    itemContainers.forEach(item => {
+                        const itemId = item.id.split("container-watchlist-item")[1];
+                        idArray.append(itemId);
+                    })
+
+                    // if list does not contain content.tmdb_id then create div similar to watchlist.html
+                    if (idArray.indexOf(content.tmdb_id) === -1) {
+                        let containerWatchlistItem = document.createElement("div");
+                        containerWatchlistItem.className = `container-watchlist-items ${content.type}`;
+                        containerWatchlistItem.setAttribute("id", `container-watchlist-item${content.tmdb_id}`)
+
+                        containerWatchlistItem.innerHTML = `
+                            <img src="${content.image_link}">
+                            <span class="overlay-rating watchlist">${content.tmdb_rating}</span>
+                            <span class="overlay-rating watchlist user hidden">${content.user_rating}</span>
+                            <script type="application/json">${content}</script>
+                             `
+
+                        // prepare content
+                        content.button = "remove";
+                        console.log(content);
+                        console.log(content.tmdb_rating);
+                        document.querySelector(".container-watchlist-content").append(containerWatchlistItem);
+
+                        // create contentcard for image
+                        createContentCard(content, "watchlist");
+
+                        // style rating scores
+                        ratingScoreVisuals();
+                    }
             } 
             // if request came from watchlist page remove item
             else {
