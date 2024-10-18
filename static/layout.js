@@ -522,14 +522,15 @@ function getRecommendations(tmdbId, type, recommendationsDiv) {
 
             data.content.forEach(content => {
                 if (content.image_link) {
+                    // create container for each result
                     const recommendationsContentContainer = document.createElement("div");
                     recommendationsContentContainer.classList.add("container-recommendations-result");
                     recommendationsContentContainer.setAttribute("id", `container-recommendations-result${content.tmdb_id}`);
-                    
-                    recommendationsContentContainer.innerHTML = `
-                        <img class="img-movie-display" src="${content.image_link}">
-                        <span class="overlay-rating recommendation">${content.tmdb_rating}</span>
-                    `;
+
+                    // create cards to display genre information
+                    const genreCards = content.genres.map(genre => 
+                        `<span class="content-card-genre-cards">${genre}</span>`
+                    ).join(``);
 
                     // Create watchlist button
                     const buttonText = content.button === "add" ? "Add to Watchlist" : "Remove from Watchlist";
@@ -541,9 +542,36 @@ function getRecommendations(tmdbId, type, recommendationsDiv) {
                     watchlistButton.addEventListener("click", () => {
                         toggleWatchlistButton(content, watchlistButton);
                     });
+                    
+                    recommendationsContentContainer.innerHTML = `
+                        <div class="recommendation-content-card--grid-column1">
+                            <img class="recommendation-img-movie-display" src="${content.image_link}">
+                            <span class="overlay-rating recommendation">${content.tmdb_rating}</span>
+                        </div>
+                        <div class="recommendation-content-card--grid-column2">
+                            <h1 class="recommendation-content-card-title">${content.title}</h1>
+                            <div class="recommendation-content-card-genres">${genreCards}</div>
+                            <p class="recommendation-content-card-overview">${content.overview}</p>
+                        </div>
+                    `;
 
-                    recommendationsContentContainer.append(watchlistButton);
+                    recommendationsContentContainer.querySelector('.recommendation-content-card--grid-column1').appendChild(watchlistButton);
+
                     recommendationsDiv.append(recommendationsContentContainer);
+
+                    // add eventlistener to toggle column2
+                    const image = recommendationsContentContainer.querySelector(".recommendation-img-movie-display");
+                    const column2 = recommendationsContentContainer.querySelector(".recommendation-content-card--grid-column2");
+
+                    image.addEventListener("click", () => {
+                        // Check the computed style to see if it's 'none'
+                        const isVisible = column2.checkVisibility();
+                        column2.style.display = !isVisible ? "flex" : "none";
+
+                        if (column2.style.display === "flex") {
+                            column2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    })
                 } 
             });
         } else {

@@ -381,6 +381,7 @@ border: var(--main-orange) 1px solid;
 border-radius: 10px;
 color: white;
 padding: 5px 8px;
+cursor: default;
 }
 
 
@@ -458,6 +459,10 @@ transform: scale(1.06);
 
 .toggle-watchlist-button.remove {
     background-color: gray;
+}
+
+.toggle-watchlist-button.recommendations-display {
+    border-radius: 0%;
 }
 
 
@@ -586,10 +591,11 @@ input:checked + .slider:before {
 
 .show-recommendations span {
     cursor: pointer;
+    color: var(--main-orange);
 }
 
 .arrow {
-    border: solid white;
+    border: solid var(--main-orange);
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
@@ -622,16 +628,30 @@ input:checked + .slider:before {
 }
 
 .container-recommendations-result {
-    position: relative;
-    width: 200px; 
+    max-width: 650px;
     height: 350px; 
     margin-right: 10px; 
     overflow: hidden;
+    display: grid;
+    grid-template-columns: 200px auto;
+    gap: 10px;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+}
+
+.recommendation-content-card--grid-column1 {
+    grid-column: 1;
     display: flex;
     flex-direction: column;
-    flex-shrink: 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    transition: transform 0.2s;
+    position: relative;
+}
+
+.recommendation-content-card--grid-column2 {
+    grid-column: 2;
+    display: none; /* hide on default */
+    flex-direction: column;
+    padding: 5px 10px 5px 5px;
+    overflow: hidden;
 }
 
 .container-recommendations-result img {
@@ -640,13 +660,54 @@ input:checked + .slider:before {
     object-fit: cover; 
 }
 
+.toggle-watchlist-button.recommendations-display {
+    width: 100%;
+    height: auto;
+}
+
 .container-recommendations-result img:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
 }
 
 .overlay-rating.recommendation {
-    font-size: 18px;
+    font-size: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.recommendation-content-card-genres {
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.recommendation-content-card-genres span {
+    color: white;
+    cursor: default;
+}
+
+
+.recommendation-content-card-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--main-orange);
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.recommendation-content-card-overview {
+    overflow: visible; 
+    max-height: none;
+    white-space: normal; 
+    font-size: 15px;
+}
+
+.recommendation-img-movie-display {
+    cursor: pointer;
 }
 
 .loading-placeholder {
