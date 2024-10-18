@@ -218,6 +218,13 @@ function clearSuggestions() {
 }
 
 function placeholderSearch() {
+    // check if placeholder already exists
+    const placeholderLoadingExists = document.getElementById("placeholder-loading-screen-search-page")
+
+    if (placeholderLoadingExists) {
+        document.getElementById("placeholder-loading-screen-search-page").remove();
+    }
+    
     // Create placeholder while loading
     const placeholderLoading = document.createElement("div");
     placeholderLoading.className = "loading-placeholder search";
