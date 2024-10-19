@@ -12,14 +12,21 @@
                 </label>
                 <label id="toggle-label">Showing Movies</label>
             </div>
-            <div class="container-filter-function-watchlist"></div>
+            <div class="container-filter-function-watchlist">
+                <select name="sort-by" class="select-field-sort-watchlist" id="sort-by">
+                    <option value="none">Sort by None</option>
+                    <option value="alphabetically">Alphabetically</option>
+                    <option value="tmdb_rating">User Rating</option>
+                    <option value="user_rating">My Rating</option>
+                </select>
+            </div>
         </div>
         <div class="container-watchlist-content">
             {% for item in watchlist_content %}
                 <div class="container-watchlist-items {{ item.type }}" id="container-watchlist-item{{ item.tmdb_id }}">
                     <img src="{{ item.image_link }}">
-                    <span class="overlay-rating watchlist">{{ item.tmdb_rating }}</span>
-                    <span class="overlay-rating watchlist user {% if item.user_rating == 0 %}hidden{% endif %}">{{ item.user_rating }}</span>
+                    <span class="overlay-rating watchlist hidden">{{ item.tmdb_rating }}</span>
+                    <span class="overlay-rating watchlist user hidden">{{ item.user_rating }}</span>
                     {{ item|json_script }}
                 </div>
             {% endfor %}

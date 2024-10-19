@@ -54,6 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
         toggle.addEventListener("change", () => {
             updateVisibilityWatchlistContent(toggle);
         })
+  
+        // set up sort by function on watchlist
+        document.getElementById("sort-by").addEventListener("change", sortWatchlistResults);
     }
 });
 
@@ -224,7 +227,7 @@ function placeholderSearch() {
     if (placeholderLoadingExists) {
         document.getElementById("placeholder-loading-screen-search-page").remove();
     }
-    
+
     // Create placeholder while loading
     const placeholderLoading = document.createElement("div");
     placeholderLoading.className = "loading-placeholder search";
@@ -235,8 +238,6 @@ function placeholderSearch() {
 
     // Append spinner and text
     placeholderLoading.append(spinner);
-
-    const searchResultsloaded = document.querySelector(".container-show-more-button");
     
     document.getElementById("placeholder-loading-animation").append(placeholderLoading);
 
@@ -797,44 +798,53 @@ function toggleWatchlistButton(content, watchlistButton) {
                 // delete item from suggestions
                 document.getElementById(`container-recommendations-result${content.tmdb_id}`).remove();
 
-                // make image show up in watchlist
-                    // collect all ids from page
-                    const itemContainers = document.querySelectorAll("container-watchlist-items");
+            // make image show up in watchlist
+                // collect all ids from page
+                const itemContainers = document.querySelectorAll("container-watchlist-items");
 
-                    let idArray = [];
+                let idArray = [];
 
-                    itemContainers.forEach(item => {
-                        const itemId = item.id.split("container-watchlist-item")[1];
-                        idArray.append(itemId);
-                    })
+                itemContainers.forEach(item => {
+                    const itemId = item.id.split("container-watchlist-item")[1];
+                    idArray.append(itemId);
+                })
 
-                    // if list does not contain content.tmdb_id then create div similar to watchlist.html
-                    if (idArray.indexOf(content.tmdb_id) === -1) {
-                        let containerWatchlistItem = document.createElement("div");
-                        containerWatchlistItem.className = `container-watchlist-items ${content.type}`;
-                        containerWatchlistItem.setAttribute("id", `container-watchlist-item${content.tmdb_id}`)
+                // if watchlist does not contain content.tmdb_id then create div and add to page
+                if (idArray.indexOf(content.tmdb_id) === -1) {
+                    let containerWatchlistItem = document.createElement("div");
+                    containerWatchlistItem.className = `container-watchlist-items ${content.type}`;
+                    containerWatchlistItem.setAttribute("id", `container-watchlist-item${content.tmdb_id}`)
 
-                        containerWatchlistItem.innerHTML = `
-                            <img src="${content.image_link}">
-                            <span class="overlay-rating watchlist">${content.tmdb_rating}</span>
-                            <span class="overlay-rating watchlist user hidden">${content.user_rating}</span>
-                            <script type="application/json">${content}</script>
-                             `
+                    // add user_rating to content to have sort by function work without refresh
+                    content.user_rating = 0.0;
 
-                        // prepare content
-                        content.button = "remove";
-                        console.log(content);
-                        console.log(content.tmdb_rating);
-                        document.querySelector(".container-watchlist-content").append(containerWatchlistItem);
+                    containerWatchlistItem.innerHTML = `
+                        <img src="${content.image_link}">
+                        <span class="overlay-rating watchlist hidden">${content.tmdb_rating}</span>
+                        <span class="overlay-rating watchlist user hidden">${content.user_rating}</span>
+                        <script type="application/json">${JSON.stringify(content)}</script>
+                            `
 
-                        // create contentcard for image
-                        createContentCard(content, "watchlist");
+                    // prepare content
+                    content.button = "remove";
+                    document.querySelector(".container-watchlist-content").append(containerWatchlistItem);
 
-                        // style rating scores
-                        ratingScoreVisuals();
+                    // create contentcard for image
+                    createContentCard(content, "watchlist");
+
+                    // style rating scores
+                    ratingScoreVisuals();
+
+                    // apply sort by filter if select field is not none
+                    const selectField = document.getElementById("sort-by");
+                    const selectFieldValue = selectField.value;
+
+                    if (selectFieldValue !== "none") {
+                        sortWatchlistResults();
                     }
+                }
             } 
-            // if request came from watchlist page remove item
+            // if request came from watchlist content card remove item
             else {
                 contentCard.remove()
                 document.getElementById(`container-watchlist-item${content.tmdb_id}`).remove();
@@ -975,4 +985,72 @@ function saveUserRating(newRating, rating) {
             alert(data.error);
         }
     });
+}
+
+
+function sortWatchlistResults() {
+    const selectField = document.getElementById("sort-by");
+    const container = document.querySelector(".container-watchlist-content");
+    const items = Array.from(container.children);
+
+    const selectedValue = selectField.value;
+
+    switch (selectedValue) {
+        case "none":
+            // Refresh the page
+            location.reload();
+            return;
+        
+        case "user_rating":
+        case "tmdb_rating":
+            // Sort items by user_rating or tmdb_rating
+            items.sort((a, b) => {
+                const dataA = JSON.parse(a.querySelector('script[type="application/json"]').innerText);
+                const dataB = JSON.parse(b.querySelector('script[type="application/json"]').innerText);
+
+                const valueA = selectedValue === "user_rating" ? dataA.user_rating : dataA.tmdb_rating;
+                const valueB = selectedValue === "user_rating" ? dataB.user_rating : dataB.tmdb_rating;
+
+                return valueB - valueA; // Descending order
+            });
+
+            // Call function to manage overlay visibility
+            toggleOverlayVisibility(selectedValue);
+            break;
+
+        case "alphabetically":
+            items.sort((a, b) => {
+                const dataA = JSON.parse(a.querySelector('script[type="application/json"]').innerText);
+                const dataB = JSON.parse(b.querySelector('script[type="application/json"]').innerText);
+                return dataA.title.localeCompare(dataB.title); // Ascending order
+            });
+
+            // Manage overlay visibility
+            toggleOverlayVisibility(selectedValue);
+            break;
+    }
+
+    // Clear container and append sorted data
+    container.innerHTML = ""; // Clear the current items
+    items.forEach(item => container.appendChild(item));
+}
+
+
+// Helper function to manage overlay visibility
+function toggleOverlayVisibility(type) {
+    const overlayRatingTmdb = document.querySelectorAll(".overlay-rating.watchlist");
+    const overlayRatingUser = document.querySelectorAll(".overlay-rating.watchlist.user");
+
+    if (type === "user_rating") {
+        // Hide TMDB ratings and show user ratings
+        overlayRatingTmdb.forEach(item => item.classList.add("hidden"));
+        overlayRatingUser.forEach(item => item.classList.remove("hidden"));
+    } else if (type === "tmdb_rating") {
+        // Show TMDB ratings and hide user ratings
+        overlayRatingTmdb.forEach(item => item.classList.remove("hidden"));
+        overlayRatingUser.forEach(item => item.classList.add("hidden"));
+    } else if (type === "alphabetically") {
+        overlayRatingTmdb.forEach(item => item.classList.add("hidden"));
+        overlayRatingUser.forEach(item => item.classList.add("hidden"));
+    }
 }

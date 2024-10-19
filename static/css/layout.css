@@ -576,6 +576,9 @@ input:checked + .slider:before {
 
 .watchlist-menu {
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .hidden {
@@ -738,4 +741,18 @@ input:checked + .slider:before {
 
 #placeholder-loading-animation {
     margin-top: 40px;
+}
+
+.label-sort-watchlist {
+    color: white;
+}
+
+.select-field-sort-watchlist {
+    background-color: whitesmoke;
+    color: var(--main-orange);
+    border-radius: 8px;
+    padding: 2px 10px;
+    outline: none;
+    border: 1px solid var(--main-orange);
+    cursor: pointer;
 }
