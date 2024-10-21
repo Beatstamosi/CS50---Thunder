@@ -257,7 +257,8 @@ def toggle_watchlist(request):
             tmdb_rating=content.get("tmdb_rating"),
             tmdb_id=content.get("tmdb_id"),
             type=content.get("type"),
-            genres=content.get("genres")
+            genres=content.get("genres"),
+            trailer_link=content.get("trailer_link")
         )
 
         # set genre ids
@@ -334,6 +335,7 @@ def watchlist(request):
             'seasons': item.content.seasons,
             'episodes': item.content.episodes,
             'type': item.content.type,
+            'trailer_link': item.content.trailer_link,
         }
         for item in watchlist_content
     ]

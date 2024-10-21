@@ -52,6 +52,9 @@ def build_content_data(request, item):
     if user_rating is not None:
         content["user_rating"] = user_rating
 
+    # create trailer link
+    content["trailer_link"] = f"https://www.youtube.com/results?search_query={content["title"]}+official+trailer"
+
     return content
 
 

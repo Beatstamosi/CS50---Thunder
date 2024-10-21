@@ -418,8 +418,7 @@ function createContentCard(content, keyword) {
     if (watchlistButton.classList.contains("remove")) {
         myRating.style.display = "flex";
     } 
-
-
+    
 
     // fill contentCard with data
     contentCard.innerHTML = `
@@ -434,6 +433,7 @@ function createContentCard(content, keyword) {
             <p class="content-card-overview">${content.overview}</p>
             <p class="content-card-actors">Starring: ${content.actors}</p>
             <p class="content-card-director">${directorText}${content.director}</p>
+            <a href="${content.trailer_link}" class="watch-trailer-button" target="_blank">Watch Trailer</a>
             <div class="container-toggle-watchlist-button"></div>
         </div>
         <div class="content-card--grid-column3">

@@ -756,3 +756,34 @@ input:checked + .slider:before {
     border: 1px solid var(--main-orange);
     cursor: pointer;
 }
+
+.watch-trailer-button {
+    border-radius: 5px;
+    background-color: var(--main-orange);
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    width: fit-content;
+    margin-bottom: 10px;
+}
+
+.watch-trailer-button:hover {
+    background-color: var(--main-orange);
+    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.5),
+                0 1px 20px rgba(255, 255, 255, 0.3);
+    outline: none;
+    transform: scale(1.06);
+    text-decoration: none;
+    color: white;
+}
+
+.empty-watchlist {
+    display: flex;
+    color: var(--main-orange);
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 20px;
+    background-color: black;
+}

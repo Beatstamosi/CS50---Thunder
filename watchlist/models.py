@@ -20,6 +20,7 @@ class Content(models.Model):
     seasons = models.IntegerField(null=True)
     episodes = models.IntegerField(null=True)
     type = models.CharField(max_length=5)
+    trailer_link = models.URLField()
 
     def clean(self):
         if self.type not in ["movie", "tv"]:

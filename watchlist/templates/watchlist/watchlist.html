@@ -22,14 +22,20 @@
             </div>
         </div>
         <div class="container-watchlist-content">
-            {% for item in watchlist_content %}
-                <div class="container-watchlist-items {{ item.type }}" id="container-watchlist-item{{ item.tmdb_id }}">
-                    <img src="{{ item.image_link }}">
-                    <span class="overlay-rating watchlist hidden">{{ item.tmdb_rating }}</span>
-                    <span class="overlay-rating watchlist user hidden">{{ item.user_rating }}</span>
-                    {{ item|json_script }}
+            {% if watchlist_content %}
+                {% for item in watchlist_content %}
+                    <div class="container-watchlist-items {{ item.type }}" id="container-watchlist-item{{ item.tmdb_id }}">
+                        <img src="{{ item.image_link }}">
+                        <span class="overlay-rating watchlist hidden">{{ item.tmdb_rating }}</span>
+                        <span class="overlay-rating watchlist user hidden">{{ item.user_rating }}</span>
+                        {{ item|json_script }}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-watchlist">
+                    <p>Your watchlist is empty.</p>
                 </div>
-            {% endfor %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}
