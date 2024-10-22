@@ -30,24 +30,37 @@ footer {
 .user-menu {
     cursor: pointer;
     color: var(--main-orange);
-    margin-top: 20px;
-    position: absolute;
-    left: 95%;
+    position: fixed;
+    top: 20px;
+    right: 20px;
 }
 
 .user-name {
-    margin-top: 20px;
+    font-size: 15px;
+    display: inline-block;
+    background-color: black;
+    border: var(--main-orange) 1px solid;
+    border-radius: 10px;
+    color: white;
+    padding: 5px 8px;
+    cursor: default;
 }
 
 .dropdown {
     display: none;
     position: absolute;
     top: 100%;
-    transform: translateX(-40%);
+    right: 0;
     color: white;
     z-index: 1000;
-    width: 300px;
     list-style: none;
+    padding: 5px;
+    width: fit-content;
+    white-space: nowrap;
+}
+
+.dropdown a {
+    color: white;
 }
 
 .user-menu:hover .dropdown {
@@ -577,8 +590,8 @@ input:checked + .slider:before {
 .watchlist-menu {
     margin-bottom: 20px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: last baseline;
+    gap: 40px;
 }
 
 .hidden {
@@ -589,7 +602,7 @@ input:checked + .slider:before {
     color: white;
     font-size: 16px;
     grid-column: 1 / -1;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 .show-recommendations span {
@@ -786,4 +799,9 @@ input:checked + .slider:before {
     margin-right: auto;
     font-size: 20px;
     background-color: black;
+}
+
+.advice-text {
+    display: none;
+    color: white;
 }

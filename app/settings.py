@@ -136,3 +136,13 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# redirect after login
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/watchlist/'
+
+# redirect after logout
+ACCOUNT_LOGOUT_REDIRECT_URL ="/accounts/login"
+
+# avoid logout confirmation
+ACCOUNT_LOGOUT_ON_GET= True

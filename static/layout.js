@@ -418,7 +418,7 @@ function createContentCard(content, keyword) {
     if (watchlistButton.classList.contains("remove")) {
         myRating.style.display = "flex";
     } 
-    
+
 
     // fill contentCard with data
     contentCard.innerHTML = `
