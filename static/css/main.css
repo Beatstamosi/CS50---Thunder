@@ -13,6 +13,12 @@ body {
     background-size: cover;
 }
 
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 footer {
     color: white;
     text-align: center;
@@ -30,7 +36,7 @@ footer {
 .user-menu {
     cursor: pointer;
     color: var(--main-orange);
-    position: fixed;
+    position: absolute;
     top: 20px;
     right: 20px;
 }
@@ -149,7 +155,7 @@ input[type='radio'] {
 #suggestions-container {
     display: flex;
     flex-direction: column;
-    padding: 50px;
+    padding: 30px 80px;
     justify-content: flex-start;
     gap: 30px;
 }
@@ -163,7 +169,7 @@ input[type='radio'] {
     display: flex;
     flex-direction: column;
     position: relative;
-    width: 300px;
+    width: 270px;
 }
 
 .container-search-result:hover, .container-watchlist-items:hover {
@@ -181,7 +187,7 @@ input[type='radio'] {
     background-color: black;
     padding: 5px;
     font-weight: bold;
-    font-size: 35px;
+    font-size: 26px;
 }
 
 .choices-content-suggestion {
@@ -214,6 +220,7 @@ input[type='radio'] {
     border-radius: 10px;
     outline: none;
     border: none;
+    cursor: pointer;
 }
 
 .show-more-button:hover {

@@ -1,0 +1,109 @@
+{% load allauth i18n %}
+
+<style>
+    :root {
+    --main-orange: #db4a2b;
+    }
+
+    body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    }
+
+    .signup-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: 100vh;
+    }
+    .signup-image {
+        background-image: url("/static/css/images/thunder_login_sign_up_background.png");
+        background-size: cover;
+        background-position: center;
+    }
+    .signup-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 40px;
+    }
+    .signup-form h1 {
+        margin-bottom: 10px;
+        color: var(--main-orange);
+    }
+    .signup-form button {
+        font-size: 20px;
+        font-weight: bold;
+        background-color: var(--main-orange);
+        color: white;
+        padding: 5px 10px;
+        width: 200px;
+        margin-bottom: 70px;
+        margin-top: 20px;
+        border-radius: 20px;
+        outline: none;
+        border: none;
+        cursor: pointer;
+    }
+    .signup-form button:hover {
+        background-color: #c43a2a;
+    }
+
+    input {
+        border-radius: 20px;
+        padding: 5px 10px;
+        border: 2px solid var(--main-orange);
+        font-size: 18px;
+        background-color: #fae8e5;
+    }
+
+    a {
+        color: var(--main-orange);
+    }
+
+    label {
+        display: none;
+    }
+
+    h1 {
+        font-size: 50px;
+    }
+</style>
+
+{% block content %}
+    <div class="signup-container">
+        <div class="signup-image"></div>
+        <div class="signup-form">
+            {% element h1 %}
+                {% trans "Sign Up" %}
+            {% endelement %}
+            {% element p %}
+                {% blocktranslate %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktranslate %}
+            {% endelement %}
+            <p>Else create your account:</p>
+            {% if not SOCIALACCOUNT_ONLY %}
+                {% url 'account_signup' as action_url %}
+                {% element form form=form method="post" action=action_url tags="entrance,signup" %}
+                    {% slot body %}
+                        {% csrf_token %}
+                        {% element fields form=form unlabeled=True %}
+                        {% endelement %}
+                        {{ redirect_field }}
+                    {% endslot %}
+                    {% slot actions %}
+                        {% element button tags="prominent,signup" type="submit" %}
+                            {% trans "Sign Up" %}
+                        {% endelement %}
+                    {% endslot %}
+                {% endelement %}
+            {% endif %}
+            {% if PASSKEY_SIGNUP_ENABLED %}
+                {% element hr %}
+                {% endelement %}
+                {% element button href=signup_by_passkey_url tags="prominent,signup,outline,primary" %}
+                    {% trans "Sign up using a passkey" %}
+                {% endelement %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
