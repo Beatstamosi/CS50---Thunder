@@ -13,8 +13,9 @@
 
     .signup-container {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 60% 40%;
         height: 100vh;
+        background-image: url("/static/css/images/background_space.jpg");
     }
     .signup-image {
         background-image: url("/static/css/images/thunder_login_sign_up_background.png");
@@ -24,8 +25,12 @@
     .signup-form {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-end;
         padding: 40px;
+        color: white;
+        border-left: 1px var(--main-orange) solid;
+        font-size: 18px;
+        
     }
     .signup-form h1 {
         margin-bottom: 10px;
