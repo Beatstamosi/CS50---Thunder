@@ -3,6 +3,18 @@ document.addEventListener("DOMContentLoaded", () => {
      * Initialize event listeners and set up the search bar.
      */
 
+    // render mobile menu
+    const isMobile = () => window.innerWidth <= 768;
+
+    if (isMobile()) {
+        const burger = document.querySelector('.burger');
+        burger.onclick = () => {
+            let menuLinks = document.querySelector(".links");
+            menuLinks.classList.toggle("d-none"); 
+            console.log(menuLinks.classList);
+        };
+    }
+
     // Javascript for Index Page
     if (currentPage === "/") {
         // change text of search bar
