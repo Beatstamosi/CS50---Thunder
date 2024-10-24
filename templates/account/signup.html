@@ -1,41 +1,102 @@
 {% load allauth i18n %}
 
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
 <style>
     :root {
     --main-orange: #db4a2b;
     }
 
     body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    /* Tablet Styles */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .signup-container {
+            background-image: url("/static/css/images/background_space.jpg");
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .signup-image {
+            display: none;
+        }
+        .signup-form {
+            font-size: 25px;
+            margin-top: 50px;
+        }
+        .input {
+            font-size: 25px;
+        }
+    }
+
+    /* Desktop Styles */
+    @media (min-width: 1025px) {
+        .signup-container {
+            display: grid;
+            grid-template-columns: 60% 40%;
+            background-image: url("/static/css/images/background_space.jpg");
+        }
+        .signup-image {
+            background-image: url("/static/css/images/thunder_login_sign_up_background.png");
+            background-size: cover;
+            background-position: center;
+        }
+        .signup-form {
+            font-size: 18px;
+            justify-content: flex-end;
+        }
+        .input {
+            font-size: 18px;
+        }
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 768px) {
+        .signup-container {
+            background-image: url("/static/css/images/thunder_mobile_background.png");
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .signup-image {
+            display: none; 
+        }
+        .signup-form {
+            font-size: 12px;
+            margin-top: 80px;
+        }
+        .input {
+            font-size: 15px;
+        }
     }
 
     .signup-container {
-        display: grid;
-        grid-template-columns: 60% 40%;
         height: 100vh;
-        background-image: url("/static/css/images/background_space.jpg");
-    }
-    .signup-image {
-        background-image: url("/static/css/images/thunder_login_sign_up_background.png");
         background-size: cover;
         background-position: center;
     }
+
     .signup-form {
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
         padding: 40px;
         color: white;
         border-left: 1px var(--main-orange) solid;
-        font-size: 18px;
-        
     }
+
     .signup-form h1 {
         margin-bottom: 10px;
         color: var(--main-orange);
     }
+
     .signup-form button {
         font-size: 20px;
         font-weight: bold;
@@ -50,6 +111,7 @@
         border: none;
         cursor: pointer;
     }
+
     .signup-form button:hover {
         background-color: #c43a2a;
     }
@@ -58,7 +120,6 @@
         border-radius: 20px;
         padding: 5px 10px;
         border: 2px solid var(--main-orange);
-        font-size: 18px;
         background-color: #fae8e5;
     }
 
@@ -73,6 +134,7 @@
     h1 {
         font-size: 50px;
     }
+
 </style>
 
 {% block content %}

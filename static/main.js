@@ -592,10 +592,10 @@ function getRecommendations(tmdbId, type, recommendationsDiv) {
 
 
 function setHoverFunctionality(contentCard, contentId, keyword) {
-    // set eventlistener for hover (desktop)
+    // get element
     const contentContainer = keyword === "search" ? document.getElementById(`content-container${contentId}`) : document.getElementById(`container-watchlist-item${contentId}`);
 
-
+    // set eventlistener for hover (desktop)
     // create timer variable
     let hoverTimeout;
 
@@ -611,14 +611,22 @@ function setHoverFunctionality(contentCard, contentId, keyword) {
         clearTimeout(hoverTimeout);
     })
 
-
-        // set eventlistener for touch (mobile)
-    // hide element
-        // set eventlistener for hover out (desktop)
+    // set eventlistener for hover out (desktop)
     contentCard.addEventListener("mouseleave", () => {
         contentCard.style.display = "none";
     })
-        // set eventlistener for touch out (mobile)
+
+
+    // set eventlistener for touch (mobile)
+    if (window.innerWidth <= 1024) {
+        contentContainer.addEventListener("click", () => {
+            if (contentCard.style.display === "none") {
+                contentCard.style.display = "grid";
+            } else {
+                contentCard.style.display = "none";
+            }
+        })
+    }
 }
 
 
@@ -974,13 +982,39 @@ function saveUserRating(newRating, rating) {
             // update overlay rating on watchlist item
             const watchlistItem = document.getElementById(`container-watchlist-item${tmdbId}`);
 
+            // create timeout variable to pause sortWatchlistResults
+            let ratingTimeout;
+
             // if user is on watchlist page
             if (watchlistItem) {
                 const overlayUserRating = watchlistItem.querySelector(".overlay-rating.watchlist.user");
                 overlayUserRating.textContent = `${newRating}`;
-                overlayUserRating.style.display = "flex";
+
+                // update value inside the script tag for sorting function to work
+                // Select the script tag
+                const scriptTag = watchlistItem.querySelector('script[type="application/json"]');
+
+                // Parse the JSON data
+                let movieData = JSON.parse(scriptTag.textContent);
+
+                // Update the user_rating
+                movieData.user_rating = newRating;
+
+                // Convert the updated object back to a JSON string
+                scriptTag.textContent = JSON.stringify(movieData);
+
+                // clear timeout if exists
+                clearTimeout(ratingTimeout);
+                // only run if sort by is not None
+                const selectField = document.getElementById("sort-by");
+                const selectedValue = selectField.value;
+
+                if (selectedValue === "user_rating") {
+                    ratingTimeout = setTimeout(() => {
+                        sortWatchlistResults();
+                    }, 2000);
+                }
             }
-            
         } else {
             alert(data.error);
         }
