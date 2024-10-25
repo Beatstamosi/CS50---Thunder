@@ -4,10 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
      */
 
     // render mobile menu
-    const isMobile = () => window.innerWidth <= 768;
+    const burger = document.querySelector('.burger');
 
-    if (isMobile()) {
-        const burger = document.querySelector('.burger');
+    if (burger) {
         burger.onclick = () => {
             let menuLinks = document.querySelector(".links");
             menuLinks.classList.toggle("d-none"); 
@@ -60,13 +59,15 @@ document.addEventListener("DOMContentLoaded", () => {
         // set up toggle switch on watchlist
         const toggle = document.getElementById("toggle");
 
+
         // initialize view
         updateVisibilityWatchlistContent(toggle);
 
         toggle.addEventListener("change", () => {
             updateVisibilityWatchlistContent(toggle);
         })
-  
+
+        
         // set up sort by function on watchlist
         document.getElementById("sort-by").addEventListener("change", sortWatchlistResults);
     }
@@ -449,7 +450,9 @@ function createContentCard(content, keyword) {
             <div class="container-toggle-watchlist-button"></div>
         </div>
         <div class="content-card--grid-column3">
+            <p class="rating-card-label">User Rating</p>
             <div class="content-card-rating">${content.tmdb_rating}</div>
+            <hr class="line-break-ratings">
         </div>
         `
 
@@ -579,19 +582,21 @@ function getRecommendations(tmdbId, type, recommendationsDiv) {
 
                     recommendationsDiv.append(recommendationsContentContainer);
 
-                    // add eventlistener to toggle column2
-                    const image = recommendationsContentContainer.querySelector(".recommendation-img-movie-display");
-                    const column2 = recommendationsContentContainer.querySelector(".recommendation-content-card--grid-column2");
+                    // add eventlistener to toggle column2 on desktop
+                    if (window.innerWidth > 768) {
+                        const image = recommendationsContentContainer.querySelector(".recommendation-img-movie-display");
+                        const column2 = recommendationsContentContainer.querySelector(".recommendation-content-card--grid-column2");
 
-                    image.addEventListener("click", () => {
-                        // Check the computed style to see if it's 'none'
-                        const isVisible = column2.checkVisibility();
-                        column2.style.display = !isVisible ? "flex" : "none";
+                        image.addEventListener("click", () => {
+                            // Check the computed style to see if it's 'none'
+                            const isVisible = column2.checkVisibility();
+                            column2.style.display = !isVisible ? "flex" : "none";
 
-                        if (column2.style.display === "flex") {
-                            column2.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    })
+                            if (column2.style.display === "flex") {
+                                column2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        })
+                    }
                 } 
             });
         } else {
@@ -612,11 +617,14 @@ function setHoverFunctionality(contentCard, contentId, keyword) {
     let hoverTimeout;
 
     // if user hovers for 1 second show contentCard
-    contentContainer.addEventListener("mouseover", () => {
+    function handleMouseOver() {
         hoverTimeout = setTimeout(() => {
             contentCard.style.display = "grid";
         }, 700);
-    })
+    }
+
+    // set event listener for mouseover
+    contentContainer.addEventListener("mouseover", handleMouseOver);
 
     // reset timer if user moves on
     contentContainer.addEventListener("mouseleave", () => {
@@ -631,12 +639,20 @@ function setHoverFunctionality(contentCard, contentId, keyword) {
 
     // set eventlistener for touch (mobile)
     if (window.innerWidth <= 1024) {
+        // remove hover eventlistener
+        contentContainer.removeEventListener("mouseover", handleMouseOver);
+        
         contentContainer.addEventListener("click", () => {
-            if (contentCard.style.display === "none") {
-                contentCard.style.display = "grid";
-            } else {
-                contentCard.style.display = "none";
-            }
+            
+            // Open the contentCard in flex display
+            contentCard.style.display = "flex";
+        })
+
+        const contentContainerImage = contentCard.querySelector(".content-card-image");
+        contentContainerImage.addEventListener("click", () => {
+
+            // Close the contentCard
+            contentCard.style.display = "none";
         })
     }
 }

@@ -669,7 +669,7 @@ input:checked + .slider:before {
     color: white;
     font-size: 16px;
     grid-column: 1 / -1;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 .show-recommendations span {
@@ -702,9 +702,9 @@ input:checked + .slider:before {
     border: 2px var(--main-orange) solid;
     padding: 20px; 
     margin-top: 15px; 
-    grid-column: 1 / -1;
     margin-right: 30px;
     max-width: 100%;
+    grid-column: 1 / -1;
     border-radius: 8px;
     box-shadow: 0 6px 15px rgba(255, 255, 255, 0.5),
             0 1px 20px rgba(255, 255, 255, 0.3);
@@ -1073,5 +1073,95 @@ input:checked + .slider:before {
         padding: 5px 10px;
         width: fit-content;
         margin-top: 10px;
+    }
+}
+
+/* Content Card for mobile */
+@media (max-width: 768px) {
+    .container-content-card {
+        padding: 20px 20px 20px 20px;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        max-height: 100vh;
+        overflow-y: auto;
+        display: none; /* Change to flex on opening via JS setHoverFunctionality */
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .content-card-image {
+        width: 100%;
+    }
+
+    .content-card-title {
+        font-size: 30px;
+        margin: 20px 0;
+    }
+
+    .toggle-watchlist-button {
+        margin-bottom: 30px;
+    }
+
+    .show-recommendations {
+        color: white;
+        font-size: 16px;
+        grid-column: 1 / -1;
+        margin-top: 20px;
+    }
+
+    .recommendations {
+        display: flex; 
+        flex-direction: column;
+        overflow: hidden; 
+        white-space: nowrap; 
+        border: none;
+        padding: 0; 
+        margin-top: 15px; 
+        grid-column: auto;
+        margin-right: 0; /* Changed */
+        max-width: 100%;
+        border-radius: none;
+        box-shadow: none;
+    }
+    
+    .container-recommendations-result {
+        max-width: 100%;
+        height: auto; 
+        margin-right: 0; /* Changed */
+        overflow-y: hidden; /* Changed */
+        overflow-x: auto; /* Changed */
+        display: flex; /* Changed */
+        flex-direction: column;
+        grid-template-columns: auto;
+        gap: unset;
+        flex-shrink: 0;
+        transition: none;
+        padding: 0 20px;
+    }
+
+    .recommendation-content-card--grid-column1 {
+        grid-column: 1; 
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .overlay-rating.recommendation {
+        font-size: 25px;
+    }
+
+    .line-break-ratings {
+        border: 2px solid var(--main-orange);
+        width: 100%;
+    }
+}
+
+/* Hide line break on desktop */
+@media (min-width: 769px) {
+    .line-break-ratings {
+        display: none;
     }
 }
