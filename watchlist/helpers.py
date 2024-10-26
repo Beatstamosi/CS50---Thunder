@@ -4,8 +4,18 @@ from .models import Watchlist, Content
 
 def build_content_data(request, item):
     """
-    Extracts relevant data from the given data structure and formats it into a dictionary.
+    Builds a dictionary of relevant content data extracted and formatted from an API response item.
+
+    Args:
+        request: The HTTP request object, used to access user information.
+        item (dict): The item dictionary containing information about a movie or TV show.
+
+    Returns:
+        dict: A dictionary of formatted content information, including title, release date, rating,
+        genre names, number of seasons and episodes (for TV shows), watchlist button state, and
+        user rating if available.
     """
+
     content = {
         "tmdb_id": item.get("id"),
         "title": item.get("title") or item.get("name"),
@@ -53,20 +63,27 @@ def build_content_data(request, item):
         content["user_rating"] = user_rating
 
     # create trailer link
-    content["trailer_link"] = f"https://www.youtube.com/results?search_query={content["title"]}+official+trailer"
+    content["trailer_link"] = (
+        f"https://www.youtube.com/results?search_query={content['title']}+official+trailer"
+    )
 
     return content
 
 
 def get_cast(id, content_type):
     """
-    Calls the tmdb api via "credits" to get the person data of people involved in the movie/tv_show
+    Fetches cast and director/producer data for a specified movie or TV show from the TMDB API.
 
-    id = id of movie or tv show
-    type = "movie" or "tv"
+    Args:
+        id (int): The ID of the movie or TV show.
+        content_type (str): Type of content, either "movie" or "tv".
 
-    Returns a list for first 5 actors and a list of the directors or Executive Producers
+    Returns:
+        tuple: A tuple with two lists:
+            - actors (list): Names of the first 5 actors.
+            - director (list): Names of directors or executive producers.
     """
+
     url = f"https://api.themoviedb.org/3/{content_type}/{id}/credits?language=en-US"
 
     headers = {
@@ -100,7 +117,15 @@ def get_cast(id, content_type):
 
 def get_episode_info(id):
     """
-    Calls the API to extract info about how many seasons and how many episodes there is
+    Retrieves the number of seasons and episodes for a TV show from the TMDB API.
+
+    Args:
+        id (int): The ID of the TV show.
+
+    Returns:
+        tuple: A tuple containing:
+            - seasons (int): Total number of seasons.
+            - episodes (int): Total number of episodes.
     """
 
     url = f"https://api.themoviedb.org/3/tv/{id}?language=en-US"
@@ -123,6 +148,16 @@ def get_episode_info(id):
 
 
 def get_genre_info(content_type, genre_ids):
+    """
+    Maps genre IDs to genre names for a movie or TV show based on content type.
+
+    Args:
+        content_type (str): The type of content, either "movie" or "tv".
+        genre_ids (list): A list of genre IDs.
+
+    Returns:
+        list: A list of genre names matching the provided genre IDs.
+    """
 
     movie_genres = {
         28: "Action",
@@ -175,6 +210,19 @@ def get_genre_info(content_type, genre_ids):
 
 
 def get_watchlist_status(request, content):
+    """
+    Determines the watchlist status of a content item for a specific user, including any existing user rating.
+
+    Args:
+        request: The HTTP request object, used to access user information.
+        content (dict): A dictionary containing content information, including the TMDB ID.
+
+    Returns:
+        tuple: A tuple with:
+            - button (str): "add" if the content is not in the watchlist, "remove" if it is.
+            - user_rating (float or None): The user's rating if available, otherwise None.
+    """
+
     user = request.user
 
     # Get watchlist filtered by user
@@ -206,8 +254,3 @@ def get_watchlist_status(request, content):
         button = "add"
 
     return button, None
-
-
-    
-
-

@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     /**
-     * Initialize event listeners and set up the search bar.
+     * Initializes event listeners and sets up the search bar, suggestions, and watchlist page functionality.
+     * Configures mobile menu toggle, search bar placeholder changes, and genre and suggestion buttons.
+     * Provides watchlist toggle visibility and sorting functionalities.
      */
 
-    // render mobile menu
     const burger = document.querySelector('.burger');
 
     if (burger) {
@@ -76,10 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function prepareSuggestions(event) {
     /**
-     * Prepare and fetch content suggestions based on the button clicked.
-
-     Args:
-         event: The click event triggered by the button.
+     * Prepares and fetches content suggestions based on the selected suggestion button.
+     *
+     * @param {Event} event - Event object from the button click triggering the function.
+     *
+     * Determines the type of suggestion (movie or TV) and fetches relevant content suggestions.
      */
 
     let suggestionType, keyword;
@@ -98,7 +100,11 @@ function prepareSuggestions(event) {
 
 function changePlaceholderSearchbar() {
     /**
-     * Change the placeholder text of the search bar based on selected search type.
+     * Updates the search bar placeholder based on the selected search category (movie, TV show, or person).
+     * Sets relevant category suggestions and clears input for new searches.
+     *
+     * Event Listeners:
+     * - Sets up search placeholder text and suggestions display for Movies, TV shows, or People.
      */
 
     const radioMovies = document.getElementById("movies");
@@ -176,14 +182,12 @@ function changePlaceholderSearchbar() {
 
 function debounce(func, delay) {
     /**
-     * Create a debounced version of a function to limit its execution rate.
-
-     Args:
-         func: The function to debounce.
-         delay: The delay in milliseconds.
-
-     Returns:
-         Function: A debounced version of the provided function.
+     * Returns a debounced version of a function, limiting how frequently it executes.
+     *
+     * @param {Function} func - Function to debounce.
+     * @param {number} delay - Delay in milliseconds before executing the function.
+     *
+     * @returns {Function} A debounced function that delays execution until the delay period has passed.
      */
 
     let timer;
@@ -198,7 +202,10 @@ function debounce(func, delay) {
 
 function getSearchInput() {
     /**
-     * Retrieve user input from the search bar and trigger a search if input is valid.
+     * Retrieves input from the search bar and triggers a search if the input length is sufficient.
+     *
+     * Checks if the search term has more than two characters before initiating a search request.
+     * Selects the current search type (movie, TV, or person) and passes it to fetchSearchData.
      */
 
     const searchbar = document.getElementById("search-bar");
@@ -220,7 +227,7 @@ function getSearchInput() {
 
 function clearSuggestions() {
     /**
-     * Clear any existing search suggestions from the UI.
+     * Clears any existing search suggestions and removes the 'show more' button from the UI.
      */
 
     // clear out search results
@@ -234,6 +241,12 @@ function clearSuggestions() {
 }
 
 function placeholderSearch() {
+    /**
+     * Creates and displays a loading placeholder while search results are being fetched.
+     *
+     * Checks if a placeholder already exists before creating a new one, and adds a loading spinner to indicate progress.
+     */
+
     // check if placeholder already exists
     const placeholderLoadingExists = document.getElementById("placeholder-loading-screen-search-page")
 
@@ -258,18 +271,22 @@ function placeholderSearch() {
 
 
 function placeholderSearchRemove() {
+    /**
+     * Removes the search loading placeholder from the UI after results are fetched.
+     */
+
     document.getElementById("placeholder-loading-screen-search-page").remove();
 }
 
 
 function fetchSearchData(searchData, searchType, page = 1) {
     /**
-     * Fetch search data from the server based on user input.
-
-     Args:
-         searchData: The search query input by the user.
-         searchType: The type of content to search for (e.g., movie, TV).
-         page: The page number for pagination (default is 1).
+     * Fetches search results based on the user's input and selected search type.
+     *
+     * @param {string} searchdata - The input text from the search bar.
+     * @param {string} searchType - The type of content to search for (e.g., 'movie', 'tv', or 'person').
+     *
+     * Initiates a network request to fetch search results and displays them once received.
      */
 
     // create placeholder while loading
@@ -312,15 +329,16 @@ function fetchSearchData(searchData, searchType, page = 1) {
 
 function showSuggestions(data, futureCall, fInput1, fInput2) {
     /**
-     * Display search suggestions in the UI based on the fetched data.
-
-     Args:
-         data: The data containing search results.
-         futureCall: A string indicating the type of future call (e.g., "Search").
-         fInput1: The first input parameter for future calls.
-         fInput2: The second input parameter for future calls.
+     * Displays fetched search suggestions in the UI.
+     *
+     * @param {Object} data - Object containing fetched content search results.
+     * @param {string} futureCall - Type of future call ("Search" or "ContentSuggestion").
+     * @param {string} fInput1 - First input parameter for the next fetch request.
+     * @param {string} fInput2 - Second input parameter for the next fetch request.
+     *
+     * Loops through content items and appends each item to the results display.
+     * Adds a 'Show More' button if there are additional pages of results to load.
      */
-
 
     // if exists hide existing showmore button
     const existingShowMoreButton = document.querySelector(".container-show-more-button");
@@ -335,19 +353,19 @@ function showSuggestions(data, futureCall, fInput1, fInput2) {
         if (content.image_link) {
 
         // create div
-        content_container = document.createElement("div");
-        content_container.classList.add("container-search-result");
+        const contentContainer = document.createElement("div");
+        contentContainer.classList.add("container-search-result");
 
         // set id
-        content_container.setAttribute("id", `content-container${content.tmdb_id}`)
+        contentContainer.setAttribute("id", `content-container${content.tmdb_id}`)
 
-        content_container.innerHTML = `
+        contentContainer.innerHTML = `
             <img class="img-movie-display" src="${content.image_link}">
             <span class="overlay-rating">${content.tmdb_rating}</span>
         `
 
         // append to 
-        document.getElementById("search-results").append(content_container);
+        document.getElementById("search-results").append(contentContainer);
 
         // create complete movie overview - hide with option to put on watchlist
         const keyword = "search";
@@ -389,11 +407,15 @@ function showSuggestions(data, futureCall, fInput1, fInput2) {
 
 function createContentCard(content, keyword) {
     /**
-     * Create and display a content card for a given content item.
-
-     Args:
-         content: An object containing data for the content item (e.g., title, image, etc.).
+     * Creates and displays a detailed content card for a specific movie or TV show.
+     *
+     * @param {Object} content - Object containing content details (e.g., title, rating, genres, overview).
+     * @param {string} keyword - Context keyword indicating the type of call (e.g., "search").
+     *
+     * Adds an 'Add to Watchlist' button or 'Remove from Watchlist' button if the content is on the user's list.
+     * Displays user rating and sets up interactivity for adding recommendations on the watchlist page.
      */
+
     // create empty div 
     let contentCard = document.createElement("div");
 
@@ -524,6 +546,16 @@ function createContentCard(content, keyword) {
 
 function getRecommendations(tmdbId, type, recommendationsDiv) {
 
+    /**
+     * Fetch and display recommended content based on a given tmdbId and type.
+     * Adds a loading placeholder while recommendations are fetched and updates
+     * the recommendationsDiv with received data.
+     *
+     * @param {string|number} tmdbId - The TMDB ID of the content.
+     * @param {string} type - The type of content (e.g., "movie" or "tv").
+     * @param {HTMLElement} recommendationsDiv - The container to display recommendations in.
+     */
+
     // create placeholder while loading
     const placeholderLoading = document.createElement("div");
     placeholderLoading.className = "loading-placeholder";
@@ -609,6 +641,15 @@ function getRecommendations(tmdbId, type, recommendationsDiv) {
 
 
 function setHoverFunctionality(contentCard, contentId, keyword) {
+    /**
+     * Set hover functionality for a content card, displaying details on hover for desktop
+     * and on click for mobile, with specific timeout and reset settings.
+     *
+     * @param {HTMLElement} contentCard - The content card element to show on hover.
+     * @param {string|number} contentId - The ID of the content.
+     * @param {string} keyword - Keyword to distinguish page type ("search" or "watchlist").
+     */
+
     // get element
     const contentContainer = keyword === "search" ? document.getElementById(`content-container${contentId}`) : document.getElementById(`container-watchlist-item${contentId}`);
 
@@ -661,12 +702,12 @@ function setHoverFunctionality(contentCard, contentId, keyword) {
 
 function getContentSuggestions(suggestionType, keyword, page = 1) {
      /**
-     * Fetch content suggestions based on the given type and keyword.
-
-     Args:
-         suggestionType: The type of suggestions to fetch (e.g., popular, top rated, upcoming).
-         keyword: The keyword for suggestions (movie or tv)
-         page: The page number for pagination (default is 1).
+     * Fetch content suggestions based on type, keyword, and pagination page.
+     * Renders results in the suggestion area and shows a loading indicator while loading.
+     *
+     * @param {string} suggestionType - The type of content suggestions (e.g., "popular").
+     * @param {string} keyword - The keyword used to specify content (e.g., "movie" or "tv").
+     * @param {number} page - The page number for paginated results (default is 1).
      */
 
     // set up placeholder loading screen
@@ -711,12 +752,11 @@ function getContentSuggestions(suggestionType, keyword, page = 1) {
 
 function getGenreSuggestion(genreId, contentType, page = 1) {
     /**
-     * Fetch content suggestions based on genre.
-
-     Args:
-         genreId: The ID of the genre to fetch suggestions for.
-         contentType: The type of content (e.g., movie, tv).
-         page: The page number for pagination (default is 1).
+     * Fetch suggestions based on genre and content type, displaying results in the suggestion area.
+     *
+     * @param {number} genreId - The ID of the genre to fetch suggestions for.
+     * @param {string} contentType - Type of content (e.g., "movie" or "tv").
+     * @param {number} page - The page number for pagination (default is 1).
      */
 
     // set up placeholder loading screen
@@ -758,7 +798,8 @@ function getGenreSuggestion(genreId, contentType, page = 1) {
 
 function ratingScoreVisuals() {
     /**
-     * Update the visual representation of rating scores in the UI.
+     * Update the visual display of rating scores for content cards. Ratings are visually displayed
+     * with a conic gradient for user-friendliness and accessibility.
      */
 
     // Only select unprocessed ratings
@@ -794,11 +835,11 @@ function ratingScoreVisuals() {
 
 function toggleWatchlistButton(content, watchlistButton) {
     /**
-     * Toggle the watchlist status for a specific content item and update the button.
-
-     Args:
-         content: The content object to be added/removed from the watchlist.
-         watchlistButton: The button element that triggers the toggle action.
+     * Toggle the watchlist status for a content item, updating the button display and managing
+     * page-specific actions for search, recommendation, or watchlist views.
+     *
+     * @param {Object} content - The content item to add or remove from the watchlist.
+     * @param {HTMLElement} watchlistButton - The button that triggers the watchlist toggle.
      */
 
     // define action for button
@@ -897,6 +938,13 @@ function toggleWatchlistButton(content, watchlistButton) {
 }
 
 function updateVisibilityWatchlistContent(toggle) {
+    /**
+     * Update visibility of watchlist content based on toggle (showing either movies or TV shows).
+     * Updates the toggle label and manages rating display updates.
+     *
+     * @param {HTMLInputElement} toggle - The toggle element to switch between movie and TV shows.
+     */
+
     const toggleButtonLabel = document.getElementById("toggle-label");
     toggleButtonLabel.textContent = toggle.checked ? "Showing TV Shows" : "Showing Movies";
     const keyword = "watchlist";
@@ -927,6 +975,11 @@ function updateVisibilityWatchlistContent(toggle) {
 }
 
 function enableRatingInteraction() {
+    /**
+     * Enable interaction with rating visuals, allowing users to click and drag to adjust ratings.
+     * Supports both desktop and mobile touch events for optimal UX.
+     */
+
     const userRatings = document.querySelectorAll(".user-rating-content-card");
 
     userRatings.forEach((userRating) => {
@@ -983,6 +1036,14 @@ function enableRatingInteraction() {
 
 
 function userRatingScoreVisuals(newRating, rating) {
+    /**
+     * Visually update the user rating score on a content card. Adjusts the rating
+     * background to display a gradient and updates the numeric value.
+     *
+     * @param {number} newRating - The new rating score.
+     * @param {HTMLElement} rating - The rating element being updated.
+     */
+
     // Convert 10.0 to 10 for display
     newRating = newRating === 10.0 ? 10 : newRating.toFixed(1);
 
@@ -993,6 +1054,14 @@ function userRatingScoreVisuals(newRating, rating) {
 
 
 function saveUserRating(newRating, rating) {
+    /**
+     * Save a new user rating to the server for a specific content item.
+     * Updates the content in the UI and sorts items if a sort option is applied.
+     *
+     * @param {number} newRating - The updated rating provided by the user.
+     * @param {HTMLElement} rating - The rating element associated with the content.
+     */
+
     // get tmdbId to access in database
     const tmdbId = Number(rating.id.split("content-card-user-rating-")[1]);
 
@@ -1051,6 +1120,11 @@ function saveUserRating(newRating, rating) {
 
 
 function sortWatchlistResults() {
+    /**
+     * Sort watchlist items based on user selection. Supports sorting by user rating, TMDB rating,
+     * and alphabetically by title, managing visibility and reordering elements accordingly.
+     */
+
     const selectField = document.getElementById("sort-by");
     const container = document.querySelector(".container-watchlist-content");
     const items = Array.from(container.children);
@@ -1098,8 +1172,14 @@ function sortWatchlistResults() {
 }
 
 
-// Helper function to manage overlay visibility
 function toggleOverlayVisibility(type) {
+    /**
+     * Helper function to toggle overlay visibility for watchlist items based on sort criteria.
+     * Hides or displays the user or TMDB ratings on content cards.
+     *
+     * @param {string} type - The type of sort applied (e.g., "user_rating", "tmdb_rating", "alphabetically").
+     */
+
     const overlayRatingTmdb = document.querySelectorAll(".overlay-rating.watchlist");
     const overlayRatingUser = document.querySelectorAll(".overlay-rating.watchlist.user");
 
