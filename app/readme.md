@@ -2,7 +2,7 @@
 
 ## Overview
 
-This application allows users to search for movies and TV shows, add content to their watchlist, view additional information, and leave ratings. Built with Django and Django Allauth, it provides a seamless user experience for managing entertainment content.
+This application allows users to search for movies and TV shows via different parameters, add content to their watchlist, view additional information, and leave ratings. Built with Django and Django Allauth, it provides a seamless user experience for managing entertainment content.
 
 ## Distinctiveness and Complexity
 
