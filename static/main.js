@@ -68,9 +68,17 @@ document.addEventListener("DOMContentLoaded", () => {
             updateVisibilityWatchlistContent(toggle);
         })
 
-        
+    
         // set up sort by function on watchlist
         document.getElementById("sort-by").addEventListener("change", sortWatchlistResults);
+
+
+        // create instance of search bar and set delay
+        const searchBarWatchlist = document.getElementById("search-bar-watchlist");
+        // get items on watchlist
+        const watchlistItems = Array.from(document.querySelector(".container-watchlist-content").children);
+        // prepare function call
+        searchBarWatchlist.addEventListener("keyup", debounce(() => searchWatchlist(watchlistItems), 500));
     }
 });
 
@@ -295,9 +303,6 @@ function fetchSearchData(searchData, searchType, page = 1) {
     if (page === 1) {
         clearSuggestions();
     }
-
-    console.log(searchData);
-    console.log(searchType);
 
     // send fetch request for search with value
     fetch("/search/", {
@@ -1194,5 +1199,37 @@ function toggleOverlayVisibility(type) {
     } else if (type === "alphabetically") {
         overlayRatingTmdb.forEach(item => item.classList.add("hidden"));
         overlayRatingUser.forEach(item => item.classList.add("hidden"));
+    }
+}
+
+
+function searchWatchlist(items) {
+    /**
+     * Searches the watchlist for items based on the input from the search bar.
+     * If the input length is greater than 2, it filters the items in the watchlist,
+     * hiding those that do not contain the search query in their titles.
+     * If the input is empty, all items are displayed.
+     *
+     * @param {HTMLElement[]} items - An array of HTML elements representing
+     *                                 the items in the watchlist.
+     */
+
+    // get searchBar input
+    const searchBar = document.getElementById("search-bar-watchlist");
+    const searchData = searchBar.value.trim().toLowerCase();
+
+    if (searchData.length > 2) {
+        // loop through array to and change visibility
+        items.forEach(item => {
+            const data = JSON.parse(item.querySelector('script[type="application/json"]').innerText);
+            const title = data.title.toLowerCase();
+
+            item.style.display = title.includes(searchData) ? "flex" : "none";
+        })
+
+    } else if (searchData.length === 0) {
+        items.forEach(item => {
+            item.style.display = "flex";
+        })
     }
 }

@@ -188,6 +188,11 @@ footer {
     width: 500px;
 }
 
+.search-bar.watchlist {
+    font-size: 17px;
+    width: 400px;
+}
+
 .search-bar:focus {
     box-shadow: 0 6px 25px rgba(255, 255, 255, 0.5),
                 0 1px 40px rgba(255, 255, 255, 0.3);
@@ -899,6 +904,11 @@ input:checked + .slider:before {
         display: inline-block;
         width: 50px;
         height: 30px;
+    }
+
+    .search-bar.watchlist {
+        font-size: 17px;
+        width: 130%;
     }
     
     .switch input {

@@ -7,6 +7,7 @@ import requests
 from django.shortcuts import get_object_or_404
 from .models import Content, Watchlist
 from django.core import serializers
+from decouple import config
 
 from watchlist.helpers import build_content_data
 
@@ -54,7 +55,7 @@ def search(request):
 
     headers = {
         "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YThhNWU3Mzc5NjliNmQ3ZDI4Y2NlNjJjNGRmNWNkMCIsIm5iZiI6MTcyNzU1NzgwMS44OTk3MzUsInN1YiI6IjY2NWU0OTUzZWNiYTJlMzAyODUxNDY0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.A4l3HBwbieBa6vr9TGySOndio7HUJ8TS454W61pefvk",
+        "Authorization": f"Bearer {config('TMDB_API_KEY')}",
     }
 
     response = requests.get(url, headers=headers)
@@ -128,7 +129,7 @@ def get_suggestions(request):
 
     headers = {
         "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YThhNWU3Mzc5NjliNmQ3ZDI4Y2NlNjJjNGRmNWNkMCIsIm5iZiI6MTcyNzU1NzgwMS44OTk3MzUsInN1YiI6IjY2NWU0OTUzZWNiYTJlMzAyODUxNDY0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.A4l3HBwbieBa6vr9TGySOndio7HUJ8TS454W61pefvk",
+        "Authorization": f"Bearer {config('TMDB_API_KEY')}",
     }
 
     response = requests.get(url, headers=headers)
@@ -195,7 +196,7 @@ def get_genre_suggestions(request):
 
     headers = {
         "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YThhNWU3Mzc5NjliNmQ3ZDI4Y2NlNjJjNGRmNWNkMCIsIm5iZiI6MTcyNzU1NzgwMS44OTk3MzUsInN1YiI6IjY2NWU0OTUzZWNiYTJlMzAyODUxNDY0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.A4l3HBwbieBa6vr9TGySOndio7HUJ8TS454W61pefvk",
+        "Authorization": f"Bearer {config('TMDB_API_KEY')}",
     }
 
     response = requests.get(url, headers=headers)
@@ -469,7 +470,7 @@ def get_recommendations(request):
 
         headers = {
             "accept": "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YThhNWU3Mzc5NjliNmQ3ZDI4Y2NlNjJjNGRmNWNkMCIsIm5iZiI6MTcyNzU1NzgwMS44OTk3MzUsInN1YiI6IjY2NWU0OTUzZWNiYTJlMzAyODUxNDY0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.A4l3HBwbieBa6vr9TGySOndio7HUJ8TS454W61pefvk",
+            "Authorization": f"Bearer {config('TMDB_API_KEY')}",
         }
 
         response = requests.get(url, headers=headers)

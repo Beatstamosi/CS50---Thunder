@@ -20,6 +20,10 @@
                     <option value="user_rating">My Rating</option>
                 </select>
             </div>
+            <div class="search-bar-container watchlist">
+                <input type="submit" disabled onclick="return false" style="display:none"></input>
+                <input class="search-bar watchlist" id="search-bar-watchlist" type="search" placeholder="Search">
+            </div>
         </div>
         <div class="container-watchlist-content">
             {% if watchlist_content %}
