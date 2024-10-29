@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js')
 
 
 # Quick-start development settings - unsuitable for production
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'watchlist',
+    'pwa',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +153,34 @@ ACCOUNT_LOGOUT_ON_GET= True
 
 
 TMDB_API_KEY = config('TMDB_API_KEY')
+
+# build manifest
+PWA_APP_NAME = 'watchlist'
+PWA_APP_DESCRIPTION = "Watchlist PWA"
+PWA_APP_THEME_COLOR = '#000000'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+	{
+		'src': 'static/css/images/thunder_logo_square.png',
+		'sizes': '500x500'
+	}
+]
+PWA_APP_ICONS_APPLE = [
+	{
+		'src': 'static/css/images/thunder_logo_square.png',
+		'sizes': '500x500'
+	}
+]
+PWA_APP_SPLASH_SCREEN = [
+	{
+		'src': 'static/css/images/thunder_logo_square.png',
+		'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+	}
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'en-US'
