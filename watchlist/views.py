@@ -6,7 +6,6 @@ from django.http import JsonResponse
 import requests
 from django.shortcuts import get_object_or_404
 from .models import Content, Watchlist
-from django.core import serializers
 from decouple import config
 
 from watchlist.helpers import build_content_data
