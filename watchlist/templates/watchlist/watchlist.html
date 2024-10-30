@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 
+
 {% block title %}My Watchlist{% endblock %}
 
 {% block body %}
@@ -32,7 +33,7 @@
                         <img src="{{ item.image_link }}">
                         <span class="overlay-rating watchlist hidden">{{ item.tmdb_rating }}</span>
                         <span class="overlay-rating watchlist user hidden">{{ item.user_rating }}</span>
-                        {{ item|json_script }}
+                        {{ item|json_script:"data" }}
                     </div>
                 {% endfor %}
             {% else %}

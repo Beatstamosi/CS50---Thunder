@@ -722,9 +722,6 @@ function getContentSuggestions(suggestionType, keyword, page = 1) {
         clearSuggestions();
     }
 
-    console.log(suggestionType);
-    console.log(keyword);
-
     fetch("/get-suggestions/", {
         method: "POST",
         body: JSON.stringify({
@@ -970,7 +967,6 @@ function updateVisibilityWatchlistContent(toggle) {
         const itemData = item.querySelector("script").textContent;
         const itemDataJson = JSON.parse(itemData);
         const keyword = "watchlist";
-        console.log(itemDataJson);
         
         createContentCard(itemDataJson, keyword);
     });
