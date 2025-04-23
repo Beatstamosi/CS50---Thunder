@@ -976,12 +976,10 @@ function updateVisibilityWatchlistContent(toggle) {
             item.style.display = shouldShow ? "flex" : "none";
             item.style.visibility = shouldShow ? "visible" : "hidden";
 
-            // Only create content cards for visible items that haven't been rendered
-            if (shouldShow && !item.dataset.rendered) {
+            if (shouldShow) {
                 try {
                     const itemData = JSON.parse(item.querySelector("script").textContent);
                     createContentCard(itemData, "watchlist");
-                    item.dataset.rendered = "true";
                 } catch (e) {
                     console.error("Error processing watchlist item:", e);
                 }
