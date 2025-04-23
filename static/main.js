@@ -947,32 +947,57 @@ function updateVisibilityWatchlistContent(toggle) {
      * @param {HTMLInputElement} toggle - The toggle element to switch between movie and TV shows.
      */
 
+    // First clean up any existing content cards to prevent duplicates
+    document.querySelectorAll('.container-content-card').forEach(card => {
+        if (card.parentNode) {
+            card.remove();
+        }
+    });
+
+    // Update toggle label
     const toggleButtonLabel = document.getElementById("toggle-label");
     toggleButtonLabel.textContent = toggle.checked ? "Showing TV Shows" : "Showing Movies";
-    const keyword = "watchlist";
 
     const showType = toggle.checked ? "tv" : "movie";
     const hideType = toggle.checked ? "movie" : "tv";
 
-    // Hide items of the other type
-    document.querySelectorAll(`.container-watchlist-items.${hideType}`).forEach(item => {
-        item.style.display = "none";
-    });
-
-    // Show items of the current type
-    document.querySelectorAll(`.container-watchlist-items.${showType}`).forEach(item => {
-        item.style.display = "flex";
-        item.style.visibility = "visible";
-
-        const itemData = item.querySelector("script").textContent;
-        const itemDataJson = JSON.parse(itemData);
-        const keyword = "watchlist";
+    // Get all watchlist items once (cached for performance)
+    const allItems = document.querySelectorAll('.container-watchlist-items');
+    
+    // Process items in batches to avoid UI freezing
+    const processBatch = (startIndex, batchSize) => {
+        const endIndex = Math.min(startIndex + batchSize, allItems.length);
         
-        createContentCard(itemDataJson, keyword);
-    });
+        for (let i = startIndex; i < endIndex; i++) {
+            const item = allItems[i];
+            const shouldShow = item.classList.contains(showType);
+            
+            item.style.display = shouldShow ? "flex" : "none";
+            item.style.visibility = shouldShow ? "visible" : "hidden";
 
-    // Rating Circle Score Visuals
-    ratingScoreVisuals();
+            if (shouldShow) {
+                try {
+                    const itemData = JSON.parse(item.querySelector("script").textContent);
+                    createContentCard(itemData, "watchlist");
+                } catch (e) {
+                    console.error("Error processing watchlist item:", e);
+                }
+            }
+        }
+
+        // Continue processing in next frame if there are more items
+        if (endIndex < allItems.length) {
+            requestAnimationFrame(() => {
+                processBatch(endIndex, batchSize);
+            });
+        } else {
+            // Final update when all items are processed
+            setTimeout(ratingScoreVisuals, 100);
+        }
+    };
+
+    // Start processing with initial batch
+    processBatch(0, 20); // Process 20 items at a time
 }
 
 function enableRatingInteraction() {
