@@ -949,30 +949,30 @@ function updateVisibilityWatchlistContent(toggle) {
 
     const toggleButtonLabel = document.getElementById("toggle-label");
     toggleButtonLabel.textContent = toggle.checked ? "Showing TV Shows" : "Showing Movies";
-    const keyword = "watchlist";
 
     const showType = toggle.checked ? "tv" : "movie";
     const hideType = toggle.checked ? "movie" : "tv";
 
-    // Hide items of the other type
+    // Hide previously visible items
     document.querySelectorAll(`.container-watchlist-items.${hideType}`).forEach(item => {
         item.style.display = "none";
     });
 
-    // Show items of the current type
+    // Show items of selected type
     document.querySelectorAll(`.container-watchlist-items.${showType}`).forEach(item => {
         item.style.display = "flex";
         item.style.visibility = "visible";
 
-        const itemData = item.querySelector("script").textContent;
-        const itemDataJson = JSON.parse(itemData);
-        const keyword = "watchlist";
-        
-        createContentCard(itemDataJson, keyword);
+        // Only render if not already rendered
+        if (!item.dataset.rendered) {
+            const itemData = item.querySelector("script").textContent;
+            const itemDataJson = JSON.parse(itemData);
+            createContentCard(itemDataJson, "watchlist");
+            item.dataset.rendered = "true"; // Prevent future duplication
+        }
     });
 
-    // Rating Circle Score Visuals
-    ratingScoreVisuals();
+    ratingScoreVisuals(); // update score visuals
 }
 
 function enableRatingInteraction() {
