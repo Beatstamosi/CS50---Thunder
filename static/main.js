@@ -65,9 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
         updateVisibilityWatchlistContent(toggle);
 
         
-        toggle.addEventListener("change", debounce(() => {
+        toggle.addEventListener("change", () => {
             updateVisibilityWatchlistContent(toggle);
-        }, 200));
+        })
 
     
         // set up sort by function on watchlist
