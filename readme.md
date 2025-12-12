@@ -4,6 +4,8 @@
 
 This application allows users to search for movies and TV shows via different parameters, add content to their watchlist, view additional information, and leave ratings. Built with Django and Django Allauth, it provides a seamless user experience for managing entertainment content.
 
+## [LIVE DEMO](https://slippery-constanta-moritzbormann-bd6dc7fa.koyeb.app/)
+
 ## Distinctiveness and Complexity
 
 This project stands out from others in the course by integrating a diverse array of features that cater to user preferences and interactions. Key aspects of its distinctiveness include:
