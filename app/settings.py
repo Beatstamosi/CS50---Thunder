@@ -167,6 +167,16 @@ ACCOUNT_LOGOUT_REDIRECT_URL ="/accounts/login"
 # avoid logout confirmation
 ACCOUNT_LOGOUT_ON_GET= True
 
+# Keep email collection but disable verification
+ACCOUNT_EMAIL_REQUIRED = True  # Users must provide email
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # But don't verify it
+ACCOUNT_AUTHENTICATION_METHOD = 'username'  # Login with username
+ACCOUNT_USERNAME_REQUIRED = True  # Username is required
+ACCOUNT_UNIQUE_EMAIL = True  # Each email must be unique
+
+# Auto-login after signup (no email verification needed)
+ACCOUNT_LOGIN_ON_SIGNUP = True
+
 
 TMDB_API_KEY = config('TMDB_API_KEY')
 
