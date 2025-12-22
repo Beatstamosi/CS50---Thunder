@@ -95,11 +95,11 @@ AUTHENTICATION_BACKENDS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'koyebdb',
-        'USER': 'koyeb-adm',
-        'PASSWORD': 'qJxiXe23vAQs',
-        'HOST': 'ep-falling-sun-a4kwsbmq.us-east-1.pg.koyeb.app',
-        'OPTIONS': {'sslmode': 'require'},
+        'NAME': os.environ.get('DATABASE_NAME', 'koyebdb'),
+        'USER': os.environ.get('DATABASE_USER', 'koyeb-adm'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'HOST': os.environ.get('DATABASE_HOST', 'ep-falling-sun-a4kwsbmq.us-east-1.pg.koyeb.app'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
