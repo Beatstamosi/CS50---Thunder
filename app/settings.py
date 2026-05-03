@@ -29,7 +29,15 @@ SECRET_KEY = "django-insecure-y&o3v-dc&%k2qrbo*j%oakqwx52pn5lgaa=*1o6!o@1-dgx+t3
 DEBUG = True
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1]").split(",")
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1]").split(",")
+    if host.strip()
+]
+
+# Koyeb runs Django behind a proxy; trust forwarded host/proto headers.
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Application definition
