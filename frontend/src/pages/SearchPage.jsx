@@ -235,15 +235,6 @@ export default function SearchPage() {
         </div>
       ) : null}
 
-      {!loading && results.length === 0 ? (
-        <div className="thunder-empty-state">
-          <h3>No items yet</h3>
-          <p>
-            Start by typing a title, choosing a suggestion, or picking a genre.
-          </p>
-        </div>
-      ) : null}
-
       {error ? <p className="thunder-error">{error}</p> : null}
 
       <div className="thunder-grid">
