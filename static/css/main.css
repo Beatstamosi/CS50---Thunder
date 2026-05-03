@@ -1098,6 +1098,7 @@ input:checked + .slider:before {
         display: none; /* Change to flex on opening via JS setHoverFunctionality */
         flex-direction: column;
         align-items: center;
+        border: none;
     }
 
     .content-card-image {

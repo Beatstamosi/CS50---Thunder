@@ -4,3 +4,5 @@ requests>=2.26.0
 python-decouple
 gunicorn==23.0.0
 whitenoise==6.8.1
+psycopg2-binary
+django-pwa

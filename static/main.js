@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // initialize view
         updateVisibilityWatchlistContent(toggle);
 
+        
         toggle.addEventListener("change", () => {
             updateVisibilityWatchlistContent(toggle);
         })

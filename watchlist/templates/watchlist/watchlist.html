@@ -1,46 +1,12 @@
 {% extends "layout.html" %}
+{% load pwa %}
+{% progressive_web_app_meta %}
 
-
-{% block title %}My Watchlist{% endblock %}
+{% block title %}
+My Watchlist
+{% endblock title %}
 
 {% block body %}
-    <div class="container-watchlist-page">
-        <div class="watchlist-menu">
-            <div class="container-toggle-watchlist-button">
-                <label class="switch">
-                    <input id="toggle" type="checkbox">
-                    <span class="slider round"></span>
-                </label>
-                <label id="toggle-label">Showing Movies</label>
-            </div>
-            <div class="container-filter-function-watchlist">
-                <select name="sort-by" class="select-field-sort-watchlist" id="sort-by">
-                    <option value="none">Sort by Added</option>
-                    <option value="alphabetically">Alphabetically</option>
-                    <option value="tmdb_rating">User Rating</option>
-                    <option value="user_rating">My Rating</option>
-                </select>
-            </div>
-            <div class="search-bar-container watchlist">
-                <input type="submit" disabled onclick="return false" style="display:none"></input>
-                <input class="search-bar watchlist" id="search-bar-watchlist" type="search" placeholder="Search">
-            </div>
-        </div>
-        <div class="container-watchlist-content">
-            {% if watchlist_content %}
-                {% for item in watchlist_content %}
-                    <div class="container-watchlist-items {{ item.type }}" id="container-watchlist-item{{ item.tmdb_id }}">
-                        <img src="{{ item.image_link }}">
-                        <span class="overlay-rating watchlist hidden">{{ item.tmdb_rating }}</span>
-                        <span class="overlay-rating watchlist user hidden">{{ item.user_rating }}</span>
-                        {{ item|json_script:"data" }}
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-watchlist">
-                    <p>Your watchlist is empty.</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-{% endblock %}
+{{ boot_data|json_script:"thunder-boot-data" }}
+<div id="react-root"></div>
+{% endblock body %}

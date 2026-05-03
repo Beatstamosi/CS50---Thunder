@@ -1,0 +1,14 @@
+{
+  "name": "thunder",
+  "private": true,
+  "scripts": {
+    "dev:backend": "sh -c 'if [ -x ./.venv312/bin/python ]; then ./.venv312/bin/python manage.py runserver; elif [ -x ./.venv/bin/python ]; then ./.venv/bin/python manage.py runserver; else echo \"No virtualenv found. Create .venv312 or .venv first.\"; exit 1; fi'",
+    "dev:frontend": "npm --prefix frontend run build -- --watch",
+    "dev:full": "concurrently -k -n backend,frontend -c blue,green \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "build:frontend": "npm --prefix frontend run build",
+    "install:frontend": "npm --prefix frontend install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

@@ -16,7 +16,7 @@ class Content(models.Model):
     user_rating = models.FloatField(null=True, default=0)
     genre_ids = models.CharField(max_length=255, blank=True)
     genres = models.TextField(null=True, blank=True)
-    tmdb_id = models.IntegerField(unique=True)
+    tmdb_id = models.IntegerField()
     seasons = models.IntegerField(null=True)
     episodes = models.IntegerField(null=True)
     type = models.CharField(max_length=5)
