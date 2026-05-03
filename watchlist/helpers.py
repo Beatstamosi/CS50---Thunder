@@ -1,8 +1,20 @@
+from functools import lru_cache
+
 import requests
 from .models import Watchlist, Content
 
 
-def build_content_data(request, item):
+TMDB_HEADERS = {
+    "accept": "application/json",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YThhNWU3Mzc5NjliNmQ3ZDI4Y2NlNjJjNGRmNWNkMCIsIm5iZiI6MTcyNzU1NzgwMS44OTk3MzUsInN1YiI6IjY2NWU0OTUzZWNiYTJlMzAyODUxNDY0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.A4l3HBwbieBa6vr9TGySOndio7HUJ8TS454W61pefvk",
+}
+
+tmdb_session = requests.Session()
+
+
+def build_content_data(
+    request, item, watchlist_lookup=None, include_details=True
+):
     """
     Builds a dictionary of relevant content data extracted and formatted from an API response item.
 
@@ -30,21 +42,15 @@ def build_content_data(request, item):
         "type": "movie" if item.get("title") else "tv",
     }
 
-    # get actors and creator
     content_type = content.get("type")
-    content_id = item.get("id")
 
-    actors, director = get_cast(content_id, content_type)
-
-    content["actors"] = ", ".join(actors)
-    content["director"] = ", ".join(director)
-
-    # get number of seasons and episodes
-    if content_type == "tv":
-        seasons, episodes = get_episode_info(content_id)
-
-        content["seasons"] = seasons
-        content["episodes"] = episodes
+    if include_details:
+        detail_data = get_content_details(
+            tmdb_id=item.get("id"),
+            content_type=content_type,
+            title=content.get("title"),
+        )
+        content.update(detail_data)
 
     # get genre information
     genre_ids = item.get("genre_ids")
@@ -55,7 +61,9 @@ def build_content_data(request, item):
     content["genre_ids"] = genre_ids
 
     # get watchlist status
-    button, user_rating = get_watchlist_status(request, content)
+    button, user_rating = get_watchlist_status(
+        request, content, watchlist_lookup=watchlist_lookup
+    )
 
     content["button"] = button
 
@@ -70,6 +78,29 @@ def build_content_data(request, item):
     return content
 
 
+def get_content_details(tmdb_id, content_type, title=None):
+    """Build richer detail fields for a content item on demand."""
+
+    actors, director = get_cast(tmdb_id, content_type)
+    detail_data = {
+        "actors": ", ".join(actors),
+        "director": ", ".join(director),
+        "trailer_link": (
+            f"https://www.youtube.com/results?search_query={title}+official+trailer"
+            if title
+            else None
+        ),
+    }
+
+    if content_type == "tv":
+        seasons, episodes = get_episode_info(tmdb_id)
+        detail_data["seasons"] = seasons
+        detail_data["episodes"] = episodes
+
+    return detail_data
+
+
+@lru_cache(maxsize=1024)
 def get_cast(id, content_type):
     """
     Fetches cast and director/producer data for a specified movie or TV show from the TMDB API.
@@ -86,25 +117,22 @@ def get_cast(id, content_type):
 
     url = f"https://api.themoviedb.org/3/{content_type}/{id}/credits?language=en-US"
 
-    headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YThhNWU3Mzc5NjliNmQ3ZDI4Y2NlNjJjNGRmNWNkMCIsIm5iZiI6MTcyNzU1NzgwMS44OTk3MzUsInN1YiI6IjY2NWU0OTUzZWNiYTJlMzAyODUxNDY0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.A4l3HBwbieBa6vr9TGySOndio7HUJ8TS454W61pefvk",
-    }
-
-    response = requests.get(url, headers=headers)
+    response = tmdb_session.get(url, headers=TMDB_HEADERS, timeout=10)
 
     if response.status_code != 200:
         print(f"Error fetching data: {response.status_code}")
         return [], []
 
     # get cast data
-    cast = response.json().get("cast", [])
+    payload = response.json()
+
+    cast = payload.get("cast", [])
 
     # get first 5 actors
     actors = [person["name"] for person in cast[:8]]
 
     # get director / producer
-    crew = response.json().get("crew", [])
+    crew = payload.get("crew", [])
     director = [
         person["name"]
         for person in crew
@@ -115,6 +143,7 @@ def get_cast(id, content_type):
     return actors, director
 
 
+@lru_cache(maxsize=1024)
 def get_episode_info(id):
     """
     Retrieves the number of seasons and episodes for a TV show from the TMDB API.
@@ -130,19 +159,15 @@ def get_episode_info(id):
 
     url = f"https://api.themoviedb.org/3/tv/{id}?language=en-US"
 
-    headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YThhNWU3Mzc5NjliNmQ3ZDI4Y2NlNjJjNGRmNWNkMCIsIm5iZiI6MTcyNzU1NzgwMS44OTk3MzUsInN1YiI6IjY2NWU0OTUzZWNiYTJlMzAyODUxNDY0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.A4l3HBwbieBa6vr9TGySOndio7HUJ8TS454W61pefvk",
-    }
-
-    response = requests.get(url, headers=headers)
+    response = tmdb_session.get(url, headers=TMDB_HEADERS, timeout=10)
 
     if response.status_code != 200:
         print(f"Error fetching data: {response.status_code}")
-        return
+        return None, None
 
-    seasons = response.json().get("number_of_seasons")
-    episodes = response.json().get("number_of_episodes")
+    payload = response.json()
+    seasons = payload.get("number_of_seasons")
+    episodes = payload.get("number_of_episodes")
 
     return seasons, episodes
 
@@ -209,7 +234,7 @@ def get_genre_info(content_type, genre_ids):
     return genre_names
 
 
-def get_watchlist_status(request, content):
+def get_watchlist_status(request, content, watchlist_lookup=None):
     """
     Determines the watchlist status of a content item for a specific user, including any existing user rating.
 
@@ -222,6 +247,15 @@ def get_watchlist_status(request, content):
             - button (str): "add" if the content is not in the watchlist, "remove" if it is.
             - user_rating (float or None): The user's rating if available, otherwise None.
     """
+
+    if watchlist_lookup is not None:
+        tmdb_id = content["tmdb_id"]
+        if tmdb_id in watchlist_lookup:
+            user_rating = watchlist_lookup[tmdb_id]
+            if user_rating:
+                return "remove", user_rating
+            return "remove", None
+        return "add", None
 
     user = request.user
 

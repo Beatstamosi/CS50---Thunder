@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("watchlist/", views.watchlist, name="watchlist"),
+    path("watchlist-content/", views.watchlist_content, name="watchlist-content"),
     
     # API calls
     path("search/", views.search, name="search"),
@@ -12,6 +13,7 @@ urlpatterns = [
     path("get-genre-suggestions/", views.get_genre_suggestions, name="get-gerne-suggestions"),
     path("toggle-watchlist/", views.toggle_watchlist, name="toggle-watchlist"),
     path("update-user-rating/", views.update_user_rating, name="update-user-rating"),
-    path("recommendations/", views.get_recommendations, name="recommendations")
+    path("recommendations/", views.get_recommendations, name="recommendations"),
+    path("content-details/", views.get_content_details_view, name="content-details"),
 ]
 

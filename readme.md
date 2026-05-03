@@ -34,7 +34,6 @@ The complexity of this project arises from several factors:
 
 Overall, this project not only distinguishes itself from others in the course through its unique combination of features and functionalities but also presents a significant level of complexity in its design and implementation. This makes it a valuable learning experience and a solid foundation for future enhancements.
 
-
 ## File Descriptions
 
 - **views.py:** Contains the backend logic for handling user requests, including search queries and watchlist management.
@@ -84,6 +83,37 @@ python manage.py runserver
 
 Visit http://127.0.0.1:8000/ in your web browser to access the application.
 
+### One-Command Dev Workflow (npm)
+
+If you prefer a Node-style workflow, you can run both Django and the React frontend watcher from the project root.
+
+1. Install backend dependencies in a virtualenv (recommended Python 3.12 for this project):
+
+```bash
+python3.12 -m venv .venv312
+source .venv312/bin/activate
+pip install -r requirements.txt
+```
+
+2. Install root and frontend npm dependencies:
+
+```bash
+npm install
+npm run install:frontend
+```
+
+3. Start both backend and frontend with one command:
+
+```bash
+npm run dev:full
+```
+
+Notes:
+
+- This runs Django `runserver` and `vite build --watch` together.
+- If `TMDB_API_KEY` is not set, the command uses a local fallback value so the server can still boot.
+- For full API functionality, set `TMDB_API_KEY` in your environment or `.env` file.
+
 ## Features
 
 - **User Authentication:** Login and Signup using Django Allauth.
@@ -97,7 +127,6 @@ Visit http://127.0.0.1:8000/ in your web browser to access the application.
 - **Adding to Watchlist:** Click the "Add to Watchlist" button to save your favorite content.
 - **Viewing Watchlist:** Access your watchlist to manage your saved content and ratings.
 - **Sorting Options:** Sort your watchlist by user rating, TMDB rating, or alphabetically by title.
-
 
 ## Additional Information
 
