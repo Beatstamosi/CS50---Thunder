@@ -2,94 +2,11 @@
 {% load pwa %}
 {% progressive_web_app_meta %}
 
-{% block title %}Search{% endblock %}
+{% block title %}
+Search
+{% endblock title %}
 
 {% block body %}
-    <div class="wrapper-search-mobile">
-        <div class="search-field"> 
-            <form>
-                <div class="radio-btn-search">
-                    <div>
-                        <input type="radio" id="movies" name="search" value="movie">
-                        <label for="movies">Movies</label>
-                    </div>
-                    <div>
-                        <input type="radio" id="tvshow" name="search" value="tv">
-                        <label for="tvshow">TV Shows</label>
-                    </div>
-                    <div>
-                        <input type="radio" id="person" name="search" value="person">
-                        <label for="person">Person</label>
-                    </div>
-                </div>
-                <div class="container-suggestions-field">
-                    <div class="choices-content-suggestion" id="choices-movie-suggestions">
-                        <span class="suggestion-button" id="movies_now_playing">Now Playing</span>
-                        <span class="suggestion-button" id="movies_upcoming">Upcoming</span>
-                        <span class="suggestion-button" id="movies_popular">Popular</span>
-                        <span class="suggestion-button" id="movies_top_rated">Top Rated</span> 
-                    </div>
-                    <div class="choices-content-suggestion" id="choices-tv-suggestions">
-                        <span class="suggestion-button" id="tv_airing_today">Airing Today</span>
-                        <span class="suggestion-button" id="tv_on_the_air">On the Air</span>
-                        <span class="suggestion-button" id="tv_popular">Popular</span>
-                        <span class="suggestion-button" id="tv_top_rated">Top Rated</span>
-                    </div>
-                </div>
-                <div class="search-bar-container">
-                    <input type="submit" disabled onclick="return false" style="display:none"></input>
-                    <input class="search-bar" id="search-bar" type="search" placeholder="Search for...Please choose from above">
-                </div>
-            </form>
-        </div>
-        <div class="container-genre-suggestions-field">
-                <div class="choices-content-suggestion-genre-movie" id="choices-genre-suggestions-movie">
-                    <button id="28" class="genre-button">Action</button>
-                    <button id="12" class="genre-button">Adventure</button>
-                    <button id="16" class="genre-button">Animation</button>
-                    <button id="35" class="genre-button">Comedy</button>
-                    <button id="80" class="genre-button">Crime</button>
-                    <button id="99" class="genre-button">Documentary</button>
-                    <button id="18" class="genre-button">Drama</button>
-                    <button id="10751" class="genre-button">Family</button>
-                    <button id="14" class="genre-button">Fantasy</button>
-                    <button id="36" class="genre-button">History</button>
-                    <button id="27" class="genre-button">Horror</button>
-                    <button id="10402" class="genre-button">Music</button>
-                    <button id="9648" class="genre-button">Mystery</button>
-                    <button id="10749" class="genre-button">Romance</button>
-                    <button id="878" class="genre-button">Science Fiction</button>
-                    <button id="10770" class="genre-button">TV Movie</button>
-                    <button id="53" class="genre-button">Thriller</button>
-                    <button id="10752" class="genre-button">War</button>
-                    <button id="37" class="genre-button">Western</button>
-                </div>
-                <div class="choices-content-suggestion-genre-tv" id="choices-genre-suggestions-tv">
-                    <button id="10759" class="genre-button">Action & Adventure</button>
-                    <button id="16" class="genre-button">Animation</button>
-                    <button id="35" class="genre-button">Comedy</button>
-                    <button id="80" class="genre-button">Crime</button>
-                    <button id="99" class="genre-button">Documentary</button>
-                    <button id="18" class="genre-button">Drama</button>
-                    <button id="10751" class="genre-button">Family</button>
-                    <button id="10762" class="genre-button">Kids</button>
-                    <button id="9648" class="genre-button">Mystery</button>
-                    <button id="10763" class="genre-button">News</button>
-                    <button id="10764" class="genre-button">Reality</button>
-                    <button id="10765" class="genre-button">Sci-Fi & Fantasy</button>
-                    <button id="10766" class="genre-button">Soap</button>
-                    <button id="10767" class="genre-button">Talk</button>
-                    <button id="10768" class="genre-button">War & Politics</button>
-                    <button id="37" class="genre-button">Western</button>
-                </div>
-        </div>
-        <div id="suggestions-container">
-            <div class="container-search-results">
-                <div id="search-results">
-                </div>
-                <div id="placeholder-loading-animation"></div>
-            </div>
-        </div>
-    </div>
-    
-{% endblock %}
+{{ boot_data|json_script:"thunder-boot-data" }}
+<div id="react-root"></div>
+{% endblock body %}

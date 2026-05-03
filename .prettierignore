@@ -1,0 +1,3 @@
+# Prevent formatter from collapsing Django template tags
+templates/**/*.html
+watchlist/templates/**/*.html

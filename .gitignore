@@ -1,2 +1,12 @@
 # Ignore environment variables
 .env
+
+# Frontend dependencies
+frontend/node_modules/
+node_modules/
+
+# Local Python environments and caches
+.venv/
+.venv312/
+**/__pycache__/
+*.pyc
